@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Cumples del Jardín</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F5F3EE;--card:#FFFFFF;--accent:#2C3E6B;--gold:#C8960A;
+  --text:#18181E;--muted:#6B7080;--border:#DDD8CE;
+  --ok:#166534;--ok-bg:#DCFCE7;--ok-bd:#86EFAC;
+  --dec:#4C3D8A;--dec-bg:#EDE9FE;--dec-bd:#C4B5FD;
+  --part:#92400E;--part-bg:#FEF3C7;--part-bd:#FCD34D;
+  --pend:#7C2D12;--pend-bg:#FEE2E2;--pend-bd:#FCA5A5;
+  --danger:#DC2626;--danger-bg:#FEF2F2;--danger-bd:#FCA5A5;
+  --r:14px;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+
+select,input[type=text],input[type=number],input[type=password]{
+  width:100%;padding:12px 14px;
+  border:1.5px solid #DDD8CE;border-radius:10px;
+  font-family:'DM Sans',system-ui,sans-serif;font-size:15px;
+  background:#FFFFFF;color:#18181E;min-height:48px;
+  -webkit-appearance:none;appearance:none;
+}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7080' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;background-size:16px;}
+select:focus,input:focus{outline:none;border-color:#2C3E6B;box-shadow:0 0 0 3px rgba(44,62,107,0.12)}
+input::placeholder{color:#9CA3AF}
+
+.hdr{background:#2C3E6B;color:#FFFFFF;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:17px;font-weight:800;font-family:'Syne',system-ui,sans-serif;color:#FFFFFF}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.6);text-align:right}
+.tabs{display:flex;background:#FFFFFF;border-bottom:2px solid #DDD8CE}
+.tab{flex:1;padding:13px 8px;font-size:14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:#6B7080;text-align:center;transition:.15s;background:#FFFFFF}
+.tab.on{color:#2C3E6B;border-color:#2C3E6B}
+.pg{display:none;padding:14px 14px 40px;max-width:480px;margin:0 auto}
+.pg.on{display:block}
+
+.btn-pay{background:#2C3E6B;color:#FFFFFF;border:none;border-radius:10px;padding:11px 22px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:46px;}
+.btn-pay:active{opacity:.85}
+.btn-add-pay{background:#EEF1F8;color:#2C3E6B;border:2px solid #2C3E6B;border-radius:10px;padding:10px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:46px;}
+.btn-add-pay:active{opacity:.85}
+.btn-primary{background:#2C3E6B;color:#FFFFFF;border:none;border-radius:10px;padding:13px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:50px;}
+.btn-primary:active{opacity:.85}
+.btn-outline-sm{background:#EEF1F8;color:#2C3E6B;border:2px solid #2C3E6B;border-radius:8px;padding:10px 16px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;white-space:nowrap;flex-shrink:0;}
+.btn-outline-sm:active{opacity:.85}
+.btn-danger{background:#DC2626;color:#FFFFFF;border:none;border-radius:10px;padding:13px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;}
+.btn-danger:active{opacity:.85}
+.btn-danger-sm{background:#FEF2F2;color:#DC2626;border:2px solid #FCA5A5;border-radius:8px;padding:8px 12px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer;min-height:38px;}
+.btn-danger-sm:active{opacity:.85}
+.btn-cancel{background:#F3F4F6;color:#374151;border:1.5px solid #D1D5DB;border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:1;min-height:46px;}
+.btn-cancel:active{opacity:.85}
+
+.fam-card{background:#FFFFFF;border:1.5px solid #DDD8CE;border-radius:var(--r);padding:14px 14px 12px;margin-bottom:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:#FFFFFF;border:1.5px solid #DDD8CE;border-radius:12px;padding:10px 8px;text-align:center}
+.stat .v{font-family:'Syne',system-ui,sans-serif;font-size:17px;font-weight:800;line-height:1.1}
+.stat .l{font-size:10px;color:#6B7080;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.v-ok{color:#166534}.v-warn{color:#92400E}.v-acc{color:#2C3E6B}
+.prog{background:#DDD8CE;border-radius:99px;height:6px;margin-bottom:14px;overflow:hidden}
+.prog-f{height:100%;border-radius:99px;background:linear-gradient(90deg,#2C3E6B,#C8960A);transition:width .5s}
+.fam-prog{background:#DDD8CE;border-radius:99px;height:5px;margin-bottom:10px;overflow:hidden}
+.fam-prog-f{height:100%;border-radius:99px;background:#166534}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;border:1.5px solid transparent}
+.b-ok{background:#DCFCE7;color:#166534;border-color:#86EFAC}
+.b-dec{background:#EDE9FE;color:#4C3D8A;border-color:#C4B5FD}
+.b-part{background:#FEF3C7;color:#92400E;border-color:#FCD34D}
+.b-pend{background:#FEE2E2;color:#7C2D12;border-color:#FCA5A5}
+.bday-chip{background:#FEF3C7;color:#92400E;border:1.5px solid #FCD34D;border-radius:99px;padding:5px 13px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin:2px 3px 2px 0}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#EEF2FF;color:#2C3E6B;border-radius:99px;padding:5px 12px;font-size:13px;font-weight:500;margin:3px}
+.chip button{background:none;border:none;color:#2C3E6B;cursor:pointer;font-size:16px;padding:0 0 0 2px;line-height:1}
+.sec-title{font-size:11px;font-weight:700;color:#6B7080;letter-spacing:.8px;text-transform:uppercase;margin:16px 0 8px}
+.lbl{display:block;font-size:12px;font-weight:600;color:#6B7080;margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.form-group{margin-bottom:14px}
+.alert{padding:11px 14px;border-radius:10px;font-size:14px;margin:8px 0;display:flex;align-items:center;gap:8px}
+.a-ok{background:#DCFCE7;color:#166534}.a-err{background:#FEF2F2;color:#DC2626}.a-info{background:#EFF6FF;color:#1D4ED8}
+.divider{border:none;border-top:1.5px solid #DDD8CE;margin:18px 0}
+.empty{text-align:center;padding:24px;color:#6B7080;font-size:14px}
+.month-bar{margin-bottom:14px}
+.pago-item{background:#F8F8F8;border:1.5px solid #DDD8CE;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.img-link{color:#166534;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline}
+.lock-screen{display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 16px}
+.pin-row{display:flex;gap:12px;justify-content:center;margin:16px 0}
+.pin-row input{width:54px!important;height:60px!important;text-align:center;font-size:24px!important;font-weight:800;border:2px solid #DDD8CE!important;border-radius:12px;padding:0!important}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:200;padding:0}
+.mo-box{background:#FFFFFF;border-radius:20px 20px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.mo-handle{width:40px;height:4px;background:#DDD8CE;border-radius:99px;margin:0 auto 18px}
+.mo-box h3{font-size:18px;font-family:'Syne',system-ui,sans-serif;font-weight:800;color:#18181E;margin-bottom:4px}
+.mo-sub{font-size:13px;color:#6B7080;margin-bottom:14px}
+.mo-btns{display:flex;gap:10px;margin-top:16px}
+.upload-zone{border:2px dashed #DDD8CE;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#FAFAFA;margin:10px 0}
+.upload-zone:active{background:#EEF1F8;border-color:#2C3E6B}
+.upload-zone input{display:none}
+.thumb{max-width:100%;border-radius:8px;margin-top:8px;max-height:160px;object-fit:contain;border:1.5px solid #DDD8CE}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>🎂 Cumples del jardín</h1>
+  <span class="hdr-sub" id="hdr-sub">Cargando...</span>
+</div>
+<div class="tabs">
+  <div class="tab on" onclick="goTab('pagos')">Pagos del mes</div>
+  <div class="tab" onclick="goTab('admin')">⚙️ Admin</div>
+</div>
+
+<div id="pg-pagos" class="pg on">
+  <div class="month-bar"><select id="sel-month" onchange="renderPagos()"></select></div>
+  <div class="stats" id="stats"></div>
+  <div class="prog"><div class="prog-f" id="prog-f" style="width:0%"></div></div>
+  <div id="bday-row" style="margin-bottom:14px"></div>
+  <div class="sec-title">Familias</div>
+  <div id="fam-list"></div>
+</div>
+
+<div id="pg-admin" class="pg">
+  <div id="lock-screen" class="lock-screen">
+    <div style="font-size:48px;margin-bottom:12px">🔒</div>
+    <h2 style="font-size:20px;font-family:'Syne',system-ui,sans-serif;font-weight:800;color:#18181E;margin-bottom:6px">Admin</h2>
+    <p style="font-size:14px;color:#6B7080;margin-bottom:4px">Ingresá el PIN para acceder</p>
+    <div class="pin-row">
+      <input type="password" id="p1" maxlength="1" inputmode="numeric" oninput="np(this,'p2')">
+      <input type="password" id="p2" maxlength="1" inputmode="numeric" oninput="np(this,'p3')">
+      <input type="password" id="p3" maxlength="1" inputmode="numeric" oninput="np(this,'p4')">
+      <input type="password" id="p4" maxlength="1" inputmode="numeric" oninput="chkPin()">
+    </div>
+    <div id="pin-err" class="alert a-err" style="display:none">PIN incorrecto</div>
+    <p style="font-size:12px;color:#6B7080;margin-top:8px">PIN por defecto: <strong>1234</strong></p>
+  </div>
+  <div id="admin-panel" style="display:none">
+    <div class="sec-title">Configurar mes</div>
+    <div class="form-group">
+      <span class="lbl">Mes a configurar</span>
+      <select id="adm-month" onchange="loadMonthCfg()"></select>
+    </div>
+    <div class="form-group">
+      <span class="lbl">Monto por niño ($)</span>
+      <input type="number" id="adm-monto" placeholder="10000" min="0">
+    </div>
+    <div class="form-group">
+      <span class="lbl">Niños que cumplen este mes</span>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <input type="text" id="bday-inp" placeholder="Nombre del niño" style="flex:1;width:auto">
+        <button class="btn-outline-sm" onclick="addBday()">+ Agregar</button>
+      </div>
+      <div id="bday-chips" style="margin-top:8px"></div>
+    </div>
+    <button class="btn-primary" onclick="saveMonthCfg()">Guardar configuración</button>
+    <div id="cfg-alert"></div>
+    <div class="divider"></div>
+    <div class="sec-title">Familias del grupo</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input type="text" id="new-fam" placeholder="Ej: Familia González" style="flex:1;width:auto">
+      <button class="btn-outline-sm" onclick="addFam()">+ Agregar</button>
+    </div>
+    <div id="adm-fam-list"></div>
+    <div class="divider"></div>
+    <div class="sec-title">Pagos registrados</div>
+    <div class="form-group"><select id="adm-pagos-month" onchange="renderAdmPagos()"></select></div>
+    <div id="adm-pagos-list"></div>
+    <div class="divider"></div>
+    <div class="sec-title">Cambiar PIN</div>
+    <div style="display:flex;gap:8px;margin-bottom:4px">
+      <input type="password" id="new-pin" maxlength="4" placeholder="Nuevo PIN (4 dígitos)" inputmode="numeric" style="flex:1;width:auto">
+      <button class="btn-outline-sm" onclick="changePin()">Guardar</button>
+    </div>
+    <div id="pin-alert"></div>
+    <div class="divider"></div>
+    <button class="btn-danger" onclick="doLogout()">Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- Modal pago -->
+<div id="mo-pay" class="mo" style="display:none">
+  <div class="mo-box">
+    <div class="mo-handle"></div>
+    <h3 id="mo-title"></h3>
+    <div class="mo-sub" id="mo-body"></div>
+    <div id="mo-rest" class="alert a-info" style="display:none"></div>
+    <div class="form-group">
+      <span class="lbl">Monto transferido ($)</span>
+      <input type="number" id="mo-monto" placeholder="10000" min="1" inputmode="numeric">
+    </div>
+    <span class="lbl">Comprobante (opcional)</span>
+    <div class="upload-zone" onclick="document.getElementById('mo-file').click()">
+      <input type="file" id="mo-file" accept="image/*" onchange="handleFile(event)">
+      <div id="upload-lbl" style="font-size:14px;font-weight:500;color:#18181E">📎 Tocar para adjuntar comprobante</div>
+      <div style="font-size:12px;color:#6B7080;margin-top:4px">Con comprobante → queda <strong>Verificado</strong> automáticamente</div>
+      <img id="upload-prev" class="thumb" style="display:none">
+    </div>
+    <div class="mo-btns">
+      <button class="btn-cancel" onclick="closeMo()">Cancelar</button>
+      <button class="btn-primary" style="flex:1" onclick="confirmPay()">✓ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal imagen -->
+<div id="mo-img" class="mo" style="display:none">
+  <div class="mo-box" style="text-align:center">
+    <div class="mo-handle"></div>
+    <h3 style="margin-bottom:14px">Comprobante</h3>
+    <img id="mo-img-src" style="max-width:100%;border-radius:10px;max-height:55vh;object-fit:contain">
+    <div style="margin-top:16px">
+      <button class="btn-primary" onclick="document.getElementById('mo-img').style.display='none'">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+let S=null,adminOk=false,payCtx=null,tmpFile=null,tmpBdays=[];
+
+function loadState(){
+  try{const raw=localStorage.getItem('cumples_jardin');if(raw)S=JSON.parse(raw);}catch(e){}
+  if(!S){
+    const n=new Date(),k=`${n.getFullYear()}-${n.getMonth()}`;
+    S={pin:'1234',families:['Familia García','Familia López','Familia Martínez'],months:{}};
+    S.months[k]={montoPerKid:10000,kids:['Sofía','Mateo'],pagos:{}};
+    saveState();
+  }
+}
+function saveState(){try{localStorage.setItem('cumples_jardin',JSON.stringify(S));}catch(e){}}
+function mk(y,m){return`${y}-${m}`;}
+function getM(k){if(!S.months[k])S.months[k]={montoPerKid:10000,kids:[],pagos:{}};return S.months[k];}
+function mlbl(k){const[y,m]=k.split('-');return`${MN[+m]} ${y}`;}
+function due(md){return(md.kids||[]).length*(md.montoPerKid||0);}
+function paid(md,f){return(md.pagos[f]||[]).reduce((s,p)=>s+p.monto,0);}
+function status(md,f){
+  const d=due(md),p=paid(md,f);
+  if(d===0)return'no-due';if(p===0)return'pending';
+  if(p>=d)return(md.pagos[f]||[]).some(x=>x.comp)?'verified':'declared';
+  return'partial';
+}
+function fmtARS(n){return Math.round(n).toLocaleString('es-AR');}
+function esc(s){return s.replace(/'/g,"\\'");}
+
+function fillSelects(){
+  const now=new Date(),y=now.getFullYear(),curM=now.getMonth();
+  ['sel-month','adm-month','adm-pagos-month'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.innerHTML='';
+    for(let m=0;m<12;m++){
+      const o=document.createElement('option');
+      o.value=mk(y,m);o.text=`${MN[m]} ${y}`;
+      if(m===curM)o.selected=true;
+      el.appendChild(o);
+    }
+  });
+}
+
+function renderPagos(){
+  const k=document.getElementById('sel-month').value;
+  const md=getM(k);
+  const[y,m]=k.split('-');
+  document.getElementById('hdr-sub').textContent=`${MN[+m]} ${y}`;
+  let rec=0,tot=0,nOk=0;
+  S.families.forEach(f=>{rec+=paid(md,f);tot+=due(md);const st=status(md,f);if(st==='verified'||st==='declared')nOk++;});
+  const pct=tot>0?Math.round(rec/tot*100):0;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="v v-ok">$${fmtARS(rec)}</div><div class="l">Recaudado</div></div>
+    <div class="stat"><div class="v v-warn">$${fmtARS(Math.max(0,tot-rec))}</div><div class="l">Falta</div></div>
+    <div class="stat"><div class="v v-acc">${nOk}/${S.families.length}</div><div class="l">Pagaron</div></div>`;
+  document.getElementById('prog-f').style.width=pct+'%';
+  const br=document.getElementById('bday-row');br.innerHTML='';
+  if(md.kids&&md.kids.length>0){
+    md.kids.forEach(n=>br.innerHTML+=`<span class="bday-chip">🎂 ${n}</span>`);
+    const d=due(md);
+    if(d>0)br.innerHTML+=`<div style="font-size:13px;color:#6B7080;margin-top:8px">Cada familia paga <strong style="color:#18181E;font-size:15px">$${fmtARS(d)}</strong> — ${md.kids.length} niño${md.kids.length>1?'s':''} × $${fmtARS(md.montoPerKid||0)}</div>`;
+  } else {
+    br.innerHTML=`<div class="alert a-info">ℹ️ Sin niños configurados para este mes</div>`;
+  }
+  const list=document.getElementById('fam-list');list.innerHTML='';
+  if(!S.families.length){list.innerHTML='<div class="empty">No hay familias cargadas</div>';return;}
+  S.families.forEach(f=>{
+    const d=due(md),p=paid(md,f),st=status(md,f);
+    const pct2=d>0?Math.min(100,Math.round(p/d*100)):0;
+    let badge='';
+    if(st==='verified')badge=`<span class="badge b-ok">✓ Verificado</span>`;
+    else if(st==='declared')badge=`<span class="badge b-dec">📋 Declarado</span>`;
+    else if(st==='partial')badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;
+    else if(st==='pending')badge=`<span class="badge b-pend">Pendiente</span>`;
+    else badge=`<span class="badge" style="background:#F0F0EE;color:#6B7080;border-color:#E0DDD8">Sin monto</span>`;
+    let action='';
+    if(st==='verified'||st==='declared'){
+      action=`<button class="btn-add-pay" onclick="openPay('${esc(f)}','${k}')">+ Agregar pago</button>`;
+    } else {
+      action=`<button class="btn-pay" onclick="openPay('${esc(f)}','${k}')">💳 Pagar</button>`;
+    }
+    const div=document.createElement('div');div.className='fam-card';
+    div.innerHTML=`
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:${d>0?8:10}px">
+        <div>
+          <div style="font-size:16px;font-weight:600;line-height:1.2;color:#18181E">${f}</div>
+          <div style="font-size:13px;color:#6B7080;margin-top:2px">$${fmtARS(p)} de $${fmtARS(d)}</div>
+        </div>${badge}
+      </div>
+      ${d>0?`<div class="fam-prog"><div class="fam-prog-f" style="width:${pct2}%"></div></div>`:''}
+      <div>${action}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function openPay(fam,k){
+  payCtx={fam,k};tmpFile=null;
+  const md=getM(k);
+  const d=due(md),p=paid(md,fam),rest=Math.max(0,d-p);
+  document.getElementById('mo-title').textContent=fam;
+  document.getElementById('mo-body').textContent=`${mlbl(k)} · Total: $${fmtARS(d)}`;
+  const ri=document.getElementById('mo-rest');
+  if(rest>0){ri.style.display='flex';ri.textContent=`Falta: $${fmtARS(rest)}`;}else{ri.style.display='none';}
+  document.getElementById('mo-monto').value=rest>0?rest:'';
+  document.getElementById('upload-lbl').innerHTML='📎 Tocar para adjuntar comprobante';
+  document.getElementById('upload-prev').style.display='none';
+  document.getElementById('mo-file').value='';
+  document.getElementById('mo-pay').style.display='flex';
+}
+function handleFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    tmpFile=ev.target.result;
+    document.getElementById('upload-prev').src=tmpFile;
+    document.getElementById('upload-prev').style.display='block';
+    document.getElementById('upload-lbl').innerHTML='<span style="color:#166534;font-weight:600">✓ Comprobante listo</span>';
+  };
+  reader.readAsDataURL(file);
+}
+async function confirmPay(){
+  if(!payCtx)return;
+  const{fam,k}=payCtx;
+  const md=getM(k);
+  const monto=parseInt(document.getElementById('mo-monto').value)||0;
+  if(monto<=0){alert('Ingresá un monto válido');return;}
+  if(!md.pagos[fam])md.pagos[fam]=[];
+  md.pagos[fam].push({monto,comp:tmpFile||null,ts:Date.now()});
+  saveState();closeMo();renderPagos();
+}
+function closeMo(){document.getElementById('mo-pay').style.display='none';payCtx=null;tmpFile=null;}
+function showImg(fam,pi,k){
+  const md=getM(k);
+  document.getElementById('mo-img-src').src=md.pagos[fam][pi].comp;
+  document.getElementById('mo-img').style.display='flex';
+}
+
+function np(el,nxt){if(el.value.length===1)document.getElementById(nxt).focus();}
+function chkPin(){
+  const pin=['p1','p2','p3','p4'].map(id=>document.getElementById(id).value).join('');
+  if(pin.length<4)return;
+  if(pin===S.pin){
+    adminOk=true;
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    renderAdminPanel();
+  } else {
+    document.getElementById('pin-err').style.display='flex';
+    ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('p1').focus();
+  }
+}
+function doLogout(){
+  adminOk=false;
+  document.getElementById('lock-screen').style.display='flex';
+  document.getElementById('admin-panel').style.display='none';
+  ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
+}
+function renderAdminPanel(){loadMonthCfg();renderAdmFams();renderAdmPagos();}
+function loadMonthCfg(){
+  const k=document.getElementById('adm-month').value;
+  const md=getM(k);
+  document.getElementById('adm-monto').value=md.montoPerKid||10000;
+  tmpBdays=[...(md.kids||[])];renderBdayChips();
+}
+function renderBdayChips(){
+  const el=document.getElementById('bday-chips');el.innerHTML='';
+  tmpBdays.forEach((b,i)=>{const s=document.createElement('span');s.className='chip';s.innerHTML=`🎂 ${b} <button onclick="rmBday(${i})">×</button>`;el.appendChild(s);});
+}
+function addBday(){const i=document.getElementById('bday-inp');const v=i.value.trim();if(!v)return;tmpBdays.push(v);i.value='';renderBdayChips();}
+function rmBday(i){tmpBdays.splice(i,1);renderBdayChips();}
+function saveMonthCfg(){
+  const k=document.getElementById('adm-month').value;
+  const md=getM(k);
+  md.montoPerKid=parseInt(document.getElementById('adm-monto').value)||10000;
+  md.kids=[...tmpBdays];
+  saveState();
+  document.getElementById('cfg-alert').innerHTML=`<div class="alert a-ok">✓ Configuración guardada</div>`;
+  setTimeout(()=>document.getElementById('cfg-alert').innerHTML='',2500);
+  renderPagos();
+}
+function renderAdmFams(){
+  const el=document.getElementById('adm-fam-list');el.innerHTML='';
+  if(!S.families.length){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
+  S.families.forEach((f,i)=>{
+    const d=document.createElement('div');d.className='fam-card';
+    d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:15px;font-weight:600;color:#18181E">${f}</span><button class="btn-danger-sm" onclick="rmFam(${i})">Eliminar</button></div>`;
+    el.appendChild(d);
+  });
+}
+function addFam(){const i=document.getElementById('new-fam');const v=i.value.trim();if(!v||S.families.includes(v))return;S.families.push(v);saveState();i.value='';renderAdmFams();}
+function rmFam(i){S.families.splice(i,1);saveState();renderAdmFams();}
+function renderAdmPagos(){
+  const k=document.getElementById('adm-pagos-month').value;
+  const md=getM(k);
+  const el=document.getElementById('adm-pagos-list');el.innerHTML='';
+  const d=due(md);
+  if(!S.families.length){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
+  S.families.forEach(f=>{
+    const p=paid(md,f),st=status(md,f),ps=md.pagos[f]||[];
+    let bc='b-pend',bl='Pendiente';
+    if(st==='verified'){bc='b-ok';bl='✓ Verificado';}
+    else if(st==='declared'){bc='b-dec';bl='📋 Declarado';}
+    else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
+    const div=document.createElement('div');div.className='fam-card';
+    let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${ps.length?10:0}px">
+      <div><div style="font-size:15px;font-weight:600;color:#18181E">${f}</div><div style="font-size:12px;color:#6B7080">$${fmtARS(p)} de $${fmtARS(d)}</div></div>
+      <span class="badge ${bc}">${bl}</span></div>`;
+    ps.forEach((p2,pi)=>{
+      const dt=new Date(p2.ts),ds=`${dt.getDate()}/${dt.getMonth()+1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
+      html+=`<div class="pago-item">
+        <div><div style="font-size:14px;font-weight:600;color:#18181E">$${fmtARS(p2.monto)}</div>
+        <div style="font-size:11px;color:#6B7080">${ds} · ${p2.comp?'<span style="color:#166534;font-weight:600">Con comprobante ✓</span>':'Sin comprobante'}</div></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${p2.comp?`<span class="img-link" onclick="showImg('${esc(f)}',${pi},'${k}')">Ver</span>`:''}
+          <button class="btn-danger-sm" style="padding:5px 10px;min-height:32px;font-size:12px" onclick="rmPago('${esc(f)}',${pi},'${k}')">✕</button>
+        </div></div>`;
+    });
+    div.innerHTML=html;el.appendChild(div);
+  });
+}
+function rmPago(fam,pi,k){
+  const md=getM(k);md.pagos[fam].splice(pi,1);
+  if(!md.pagos[fam].length)delete md.pagos[fam];
+  saveState();renderAdmPagos();renderPagos();
+}
+function changePin(){
+  const v=document.getElementById('new-pin').value;
+  const el=document.getElementById('pin-alert');
+  if(!/^\d{4}$/.test(v)){el.innerHTML='<div class="alert a-err">El PIN debe ser de 4 dígitos</div>';return;}
+  S.pin=v;saveState();document.getElementById('new-pin').value='';
+  el.innerHTML='<div class="alert a-ok">✓ PIN actualizado</div>';
+  setTimeout(()=>el.innerHTML='',2500);
+}
+function goTab(t){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('pg-'+t).classList.add('on');
+  document.querySelectorAll('.tab').forEach((el,i)=>{if((i===0&&t==='pagos')||(i===1&&t==='admin'))el.classList.add('on');});
+  if(t==='admin'&&adminOk)renderAdminPanel();
+}
+document.getElementById('adm-pagos-month').addEventListener('change',renderAdmPagos);
+document.getElementById('adm-month').addEventListener('change',loadMonthCfg);
+loadState();fillSelects();renderPagos();
+</script>
+</body>
+</html>

@@ -353,16 +353,20 @@ let S=null,adminOk=false,payCtx=null,tmpFile=null,editFamIdx=null,tmpKids=[];
 
 // ── Dark mode ─────────────────────────────────────────────────────────────
 function initTheme(){
-  const saved=localStorage.getItem('theme');
-  const dark=saved?saved==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const dark=prefersDark;
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
   document.getElementById('toggle-icon').textContent=dark?'☀️':'🌙';
+  // Listen for system changes and follow them
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
+    document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
+    document.getElementById('toggle-icon').textContent=e.matches?'☀️':'🌙';
+  });
 }
 window.toggleDark=function(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
   const next=dark?'light':'dark';
   document.documentElement.setAttribute('data-theme',next);
-  localStorage.setItem('theme',next);
   document.getElementById('toggle-icon').textContent=next==='dark'?'☀️':'🌙';
 };
 initTheme();

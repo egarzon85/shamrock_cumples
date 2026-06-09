@@ -136,8 +136,8 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .collapse-body{overflow:hidden;transition:max-height .3s ease}
 .field-hint{font-size:11px;color:var(--danger);margin-top:4px;display:none}
 .field-hint.show{display:block}
-.rec-banner{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.rec-banner-icon{font-size:16px;flex-shrink:0}
+.rec-banner{background:var(--ok-bg);border:1.5px solid var(--ok-bd);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.rec-banner-icon{font-size:18px;flex-shrink:0}
 .rec-banner-text{font-size:12px;color:var(--muted);font-weight:500}
 .rec-banner-alias{font-size:16px;color:var(--accent);font-weight:800;margin-top:1px;cursor:pointer}
 .transfer-box{background:var(--email-bg);border:1.5px solid var(--email-bd);border-radius:12px;padding:12px 14px;margin-bottom:14px}
@@ -949,11 +949,15 @@ function renderAdmPagos(){
   // ── Transfer box ──────────────────────────────────────────────────────
   const bdaysThisMonth=bdayKidsThisMonth(mi);
   if(bdaysThisMonth.length>0){
-    const totalFamilies=(S.families||[]).length;
-    // Total recaudado: sum of what each family paid
+    // Expected total: sum of what each family SHOULD pay
+    let expectedTotal=0;
+    (S.families||[]).forEach(f=>expectedTotal+=effectiveDue(f,mi,mpk));
+    const expectedPerBday=bdaysThisMonth.length>0?Math.round(expectedTotal/bdaysThisMonth.length):0;
+    // Recaudado so far
     let totalRec=0;
     (S.families||[]).forEach(f=>totalRec+=paidAmt(f.name,k));
-    const amountPerBday=bdaysThisMonth.length>0?Math.round(totalRec/bdaysThisMonth.length):0;
+    const recPerBday=bdaysThisMonth.length>0?Math.round(totalRec/bdaysThisMonth.length):0;
+    const pctRec=expectedPerBday>0?Math.min(100,Math.round(recPerBday/expectedPerBday*100)):0;
     if(!S.transfers)S.transfers={};
     if(!S.transfers[k])S.transfers[k]={};
     let boxHtml=`<div class="transfer-box"><div class="transfer-box-title">💸 Transferencias a realizar</div>`;
@@ -961,14 +965,19 @@ function renderAdmPagos(){
       const famObj=(S.families||[]).find(f=>f.name===b.fam);
       const done=S.transfers[k][b.fam]===true;
       const aliasStr=famObj&&famObj.alias?famObj.alias:'Sin alias';
-      boxHtml+=`<div class="transfer-row ${done?'transfer-done':''}">
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text)">${b.fam}</div>
-          <div style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer" onclick="copyAlias('${esc(aliasStr)}')" id="tf-alias-${esc(b.fam)}">${aliasStr}</div>
-          <div style="font-size:12px;color:var(--muted)">$${fmtARS(amountPerBday)}</div>
-          <div id="tf-copy-${esc(b.fam)}" style="font-size:11px;color:var(--ok);font-weight:600;height:14px"></div>
+      const cbId=`tf-cb-${b.fam.replace(/\s/g,'_')}`;
+      boxHtml+=`<div class="transfer-row" style="${done?'opacity:.5':''}">
+        <div style="display:flex;align-items:flex-start;gap:10px;flex:1">
+          <input type="checkbox" id="${cbId}" ${done?'checked':''} onchange="toggleTransfer('${esc(b.fam)}','${k}')"
+            style="width:18px;height:18px;flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--ok)">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700;color:var(--text);${done?'text-decoration:line-through':''}">${b.fam}</div>
+            <div style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;margin-top:1px" onclick="copyAlias('${esc(aliasStr)}')">${aliasStr}</div>
+            <div id="tf-copy-${b.fam.replace(/\s/g,'_')}" style="font-size:11px;color:var(--ok);font-weight:600;height:12px"></div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:2px">$${fmtARS(expectedPerBday)}</div>
+            <div style="font-size:11px;color:var(--muted)">Recaudado: $${fmtARS(recPerBday)} (${pctRec}%)</div>
+          </div>
         </div>
-        <button class="btn-transfer ${done?'done':''}" onclick="toggleTransfer('${esc(b.fam)}','${k}')">${done?'✓ Hecho':'Transferir'}</button>
       </div>`;
     });
     boxHtml+='</div>';
@@ -987,12 +996,12 @@ function renderAdmPagos(){
     else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
     const div=document.createElement('div');div.className='fam-card';
     const ownBdaysAdmin=(f.kids||[]).filter(ki=>+ki.month===+mi);
-    const aliasRow=ownBdaysAdmin.length>0&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600;cursor:pointer" onclick="copyAlias('${esc(f.alias)}')">🏦 ${f.alias}</div>`:'';
+    // Only show birthday row, no alias (alias is shown in transfer box above)
     const bdayRow=ownBdaysAdmin.length>0?`<div style="font-size:12px;color:var(--ok);margin-top:3px">🎂 Cumple: ${ownBdaysAdmin.map(ki=>ki.name+(ki.day?` (${ki.day}/${+mi+1})`:'')).join(', ')}</div>`:'';
     const famId=f.name.replace(/\s/g,'_');
     let html=`<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="togglePagosDetail('${famId}')">
       <div><div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
-      <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${bdayRow}${aliasRow}</div>
+      <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${bdayRow}</div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="badge ${bc}">${bl}</span>
         ${ps.length?`<span style="font-size:12px;color:var(--muted)">▼</span>`:''}

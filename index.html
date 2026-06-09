@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Velitas</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -49,7 +49,7 @@ input::placeholder{color:var(--muted)}
 input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,38,38,0.12)!important}
 
 .hdr{background:var(--accent);color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;transition:background .2s}
-.hdr h1{font-size:15px;font-weight:800;font-family:'Syne',system-ui,sans-serif;flex-shrink:1;min-width:0;line-height:1.2;white-space:nowrap}
+.hdr h1{font-size:15px;font-weight:800;font-family:'Nunito',system-ui,sans-serif;flex-shrink:1;min-width:0;line-height:1.2;white-space:nowrap}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .admin-link{font-size:11px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:transparent;font-family:'DM Sans',system-ui,sans-serif;white-space:nowrap}
 .admin-link:active{background:rgba(255,255,255,.15)}
@@ -81,7 +81,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .fam-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 14px 12px;margin-bottom:10px;transition:background .2s,border-color .2s}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .stat{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center;transition:background .2s}
-.stat .v{font-family:'Syne',system-ui,sans-serif;font-size:17px;font-weight:800;line-height:1.1}
+.stat .v{font-family:'Nunito',system-ui,sans-serif;font-size:17px;font-weight:800;line-height:1.1}
 .stat .l{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
 .v-ok{color:var(--ok)}.v-warn{color:var(--part)}.v-acc{color:var(--accent)}
 .prog{background:var(--border);border-radius:99px;height:6px;margin-bottom:14px;overflow:hidden}
@@ -113,7 +113,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:200;padding:0}
 .mo-box{background:var(--card);border-radius:20px 20px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;transition:background .2s}
 .mo-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 18px}
-.mo-box h3{font-size:18px;font-family:'Syne',system-ui,sans-serif;font-weight:800;color:var(--text);margin-bottom:4px}
+.mo-box h3{font-size:18px;font-family:'Nunito',system-ui,sans-serif;font-weight:800;color:var(--text);margin-bottom:4px}
 .mo-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
 .mo-btns{display:flex;gap:10px;margin-top:16px}
 .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:var(--bg);margin:10px 0;transition:all .2s}
@@ -164,7 +164,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 <div id="pg-admin" class="pg">
   <div id="lock-screen" class="lock-screen">
     <div style="font-size:48px;margin-bottom:12px">🔒</div>
-    <h2 style="font-size:20px;font-family:'Syne',system-ui,sans-serif;font-weight:800;color:var(--text);margin-bottom:6px">Admin</h2>
+    <h2 style="font-size:20px;font-family:'Nunito',system-ui,sans-serif;font-weight:800;color:var(--text);margin-bottom:6px">Admin</h2>
     <p style="font-size:14px;color:var(--muted);margin-bottom:4px">Ingresá el PIN para acceder</p>
     <div class="pin-row">
       <input type="password" id="p1" maxlength="1" inputmode="numeric" oninput="np(this,'p2')">

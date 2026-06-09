@@ -861,3 +861,130 @@ window.openEditFam=function(i){
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
+  document.getElementById('kid-day').classList.remove('error');
+  document.getElementById('day-hint').classList.remove('show');
+  renderKidsList();
+  document.getElementById('mo-fam').style.display='flex';
+};
+window.closeMoFam=function(){document.getElementById('mo-fam').style.display='none';editFamIdx=null;tmpKids=[];};
+window.addKid=function(){
+  const n=document.getElementById('kid-name').value.trim();
+  const d=parseInt(document.getElementById('kid-day').value)||null;
+  const m=document.getElementById('kid-month').value;
+  if(!n||m===''){alert('Completá nombre y mes');return;}
+  if(!window.validateDay()){alert('El día ingresado no es válido para ese mes');return;}
+  tmpKids.push({name:n,day:d,month:+m});
+  document.getElementById('kid-name').value='';
+  document.getElementById('kid-day').value='';
+  document.getElementById('kid-month').value='';
+  document.getElementById('kid-day').classList.remove('error');
+  document.getElementById('day-hint').classList.remove('show');
+  renderKidsList();
+};
+window.rmKid=function(i){tmpKids.splice(i,1);renderKidsList();};
+function renderKidsList(){
+  const el=document.getElementById('kids-list');el.innerHTML='';
+  if(!tmpKids.length){el.innerHTML='<div style="font-size:13px;color:var(--muted);margin-bottom:8px">Sin hijos cargados</div>';return;}
+  tmpKids.forEach((k,i)=>{
+    const d=document.createElement('div');d.className='kid-row';
+    const ds=k.day?`${k.day} de ${MN[k.month]}`:MN[k.month];
+    d.innerHTML=`<span style="font-size:14px;font-weight:500;color:var(--text)">🎂 ${k.name} — ${ds}</span><button class="btn-danger-sm" style="padding:5px 10px;min-height:30px;font-size:12px" onclick="rmKid(${i})">✕</button>`;
+    el.appendChild(d);
+  });
+}
+window.saveFam=async function(){
+  const name=document.getElementById('mo-fam-name').value.trim();
+  const email=document.getElementById('mo-fam-email').value.trim();
+  const alias=document.getElementById('mo-fam-alias').value.trim();
+  if(!name){alert('Ingresá el nombre de la familia');return;}
+  if(!S.families)S.families=[];
+  const fam={name,email:email||'',alias:alias||'',kids:JSON.parse(JSON.stringify(tmpKids))};
+  if(editFamIdx===null){
+    if(S.families.some(f=>f.name===name)){alert('Ya existe esa familia');return;}
+    S.families.push(fam);
+  }else{
+    const oldName=S.families[editFamIdx].name;
+    if(oldName!==name&&S.pagos){Object.keys(S.pagos).forEach(k=>{if(S.pagos[k][oldName]){S.pagos[k][name]=S.pagos[k][oldName];delete S.pagos[k][oldName];}});}
+    S.families[editFamIdx]=fam;
+  }
+  await save();closeMoFam();renderAdmFams();fillSelects();fillRecFam();
+  const body=document.getElementById('fam-body');
+  if(famOpen)body.style.maxHeight=body.scrollHeight+600+'px';
+};
+function renderAdmFams(){
+  const el=document.getElementById('adm-fam-list');el.innerHTML='';
+  const count=(S.families||[]).length;
+  document.getElementById('fam-count').textContent=count?`(${count})`:'';
+  if(!count){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
+  // Admin list sorted alphabetically too
+  const sorted=[...(S.families||[])].map((f,i)=>({...f,_idx:i})).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  sorted.forEach(f=>{
+    const div=document.createElement('div');div.className='fam-card';
+    const ks=f.kids&&f.kids.length?f.kids.map(k=>`${k.name} (${k.day?k.day+' de ':''}${MN[k.month]})`).join(', '):'Sin hijos';
+    div.innerHTML=`
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">🎂 ${ks}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:1px">✉️ ${f.email||'Sin mail'}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:1px">🏦 ${f.alias||'Sin alias'}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn-outline-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="openEditFam(${f._idx})">Editar</button>
+          <button class="btn-danger-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="rmFam(${f._idx})">✕</button>
+        </div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+window.rmFam=async function(i){S.families.splice(i,1);await save();renderAdmFams();fillSelects();};
+function renderAdmPagos(){
+  const k=document.getElementById('adm-pagos-month').value;
+  const[y,m]=k.split('-'),mi=+m,mpk=getMontoPerKid(k);
+  const el=document.getElementById('adm-pagos-list');el.innerHTML='';
+  if(!(S.families||[]).length){el.innerHTML='<div class="empty">Sin familias</div>';return;}
+  const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  sorted.forEach(f=>{
+    const due=effectiveDue(f,mi,mpk),ps=getPagos(f.name,k),p=paidAmt(f.name,k);
+    const st=due===0?'no-due':status(f.name,k,due);
+    let bc='b-pend',bl='Pendiente';
+    if(st==='no-due'){bc='b-free';bl='🎂 No paga';}
+    else if(st==='verified'){bc='b-ok';bl='✓ Verificado';}
+    else if(st==='declared'){bc='b-dec';bl='📋 Declarado';}
+    else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
+    const div=document.createElement('div');div.className='fam-card';
+    const ownBdaysAdmin=(f.kids||[]).filter(ki=>+ki.month===+mi);
+    const aliasRow=ownBdaysAdmin.length>0&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🏦 ${f.alias}</div>`:'';
+    const bdayRow=ownBdaysAdmin.length>0?`<div style="font-size:12px;color:var(--ok);margin-top:3px">🎂 Cumple: ${ownBdaysAdmin.map(ki=>ki.name+(ki.day?` (${ki.day}/${+mi+1})`:'')).join(', ')}</div>`:'';
+    let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${ps.length?10:0}px">
+      <div><div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
+      <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${bdayRow}${aliasRow}</div>
+      <span class="badge ${bc}">${bl}</span></div>`;
+    ps.forEach((p2,pi)=>{
+      const dt=new Date(p2.ts),ds=`${dt.getDate()}/${dt.getMonth()+1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
+      html+=`<div class="pago-item">
+        <div><div style="font-size:14px;font-weight:600;color:var(--text)">$${fmtARS(p2.monto)}</div>
+        <div style="font-size:11px;color:var(--muted)">${ds} · ${p2.comp?'<span style="color:var(--ok);font-weight:600">Con comprobante ✓</span>':'Sin comprobante'}</div></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${p2.comp?`<span class="img-link" onclick="showImg('${esc(f.name)}',${pi},'${k}')">Ver</span>`:''}
+          <button class="btn-danger-sm" style="padding:5px 10px;min-height:32px;font-size:12px" onclick="rmPago('${esc(f.name)}',${pi},'${k}')">✕</button>
+        </div></div>`;
+    });
+    div.innerHTML=html;el.appendChild(div);
+  });
+}
+window.renderAdmPagos=renderAdmPagos;
+window.rmPago=async function(fam,pi,k){
+  S.pagos[k][fam].splice(pi,1);
+  if(!S.pagos[k][fam].length)delete S.pagos[k][fam];
+  await save();renderAdmPagos();
+};
+
+document.getElementById('adm-pagos-month').addEventListener('change',renderAdmPagos);
+document.getElementById('adm-month').addEventListener('change',loadMontoCfg);
+document.getElementById('sel-month').addEventListener('change',renderPagos);
+document.getElementById('rec-month').addEventListener('change',loadRecCfg);
+init();
+</script>
+</body>
+</html>

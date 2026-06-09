@@ -136,7 +136,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .collapse-body{overflow:hidden;transition:max-height .3s ease}
 .field-hint{font-size:11px;color:var(--danger);margin-top:4px;display:none}
 .field-hint.show{display:block}
-.rec-banner{background:var(--ok-bg);border:1.5px solid var(--ok-bd);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.rec-banner{background:var(--email-bg);border:1.5px solid var(--email-bd);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .rec-banner-icon{font-size:18px;flex-shrink:0}
 .rec-banner-text{font-size:12px;color:var(--muted);font-weight:500}
 .rec-banner-alias{font-size:16px;color:var(--accent);font-weight:800;margin-top:1px;cursor:pointer}
@@ -535,7 +535,7 @@ function renderPagos(){
     recBanner.innerHTML=`<div class="rec-banner">
       <div class="rec-banner-icon">💳</div>
       <div>
-        <div class="rec-banner-text">Transferí a: ${recFam.name}</div>
+        <div class="rec-banner-text">Transferencias a: ${recFam.name}</div>
         ${recFam.alias
           ?`<div class="rec-banner-alias" onclick="copyAlias('${esc(recFam.alias)}')" style="cursor:pointer">${recFam.alias}</div>`
           :'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}
@@ -976,7 +976,7 @@ function renderAdmPagos(){
               <div style="font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;font-family:'Nunito',system-ui,sans-serif">$${fmtARS(expectedPerBday)}</div>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:2px">
-              <div style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer" onclick="copyAlias('${esc(aliasStr)}')">${aliasStr}</div>
+              <div style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer" onclick="copyAlias('${esc(aliasStr)}','tf-copy-${b.fam.replace(/\s/g,'_')}')">${aliasStr}</div>
               <div style="font-size:11px;color:var(--muted);white-space:nowrap">Rec: $${fmtARS(recPerBday)} (${pctRec}%)</div>
             </div>
             <div id="tf-copy-${b.fam.replace(/\s/g,'_')}" style="font-size:11px;color:var(--ok);font-weight:600;height:12px"></div>

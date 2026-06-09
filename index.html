@@ -218,15 +218,6 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
     </div>
 
     <div class="divider"></div>
-    <div class="sec-title">Familia recaudadora del mes</div>
-    <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px">
-      <div style="flex:1"><span class="lbl">Mes</span><select id="rec-month" onchange="loadRecCfg()"></select></div>
-      <div style="flex:1"><span class="lbl">Familia</span><select id="rec-fam"></select></div>
-    </div>
-    <button class="btn-primary" onclick="saveRecCfg()" style="margin-bottom:6px">Guardar recaudadora</button>
-    <div id="rec-alert"></div>
-
-    <div class="divider"></div>
     <button class="btn-notif" onclick="openMoNotif()" style="margin-bottom:10px">✉️ Notificaciones por mail</button>
 
     <div class="divider"></div>
@@ -470,7 +461,7 @@ window.validateDay=function(){
 // ── Fill selects with birthday count ─────────────────────────────────────
 function fillSelects(){
   const now=new Date(),y=now.getFullYear(),cm=now.getMonth();
-  ['sel-month','adm-month','adm-pagos-month','email-month','remind-month','rec-month'].forEach(id=>{
+  ['sel-month','adm-month','adm-pagos-month','email-month','remind-month'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     el.innerHTML='';
     for(let m=0;m<12;m++){
@@ -483,33 +474,12 @@ function fillSelects(){
       el.appendChild(o);
     }
   });
-  fillRecFam();
 }
-function fillRecFam(){
-  const el=document.getElementById('rec-fam');if(!el)return;
-  el.innerHTML='<option value="">— Sin recaudadora —</option>';
-  const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
-  sorted.forEach(f=>{
-    const o=document.createElement('option');
-    o.value=f.name;o.text=f.name+(f.alias?` (${f.alias})`:'');
-    el.appendChild(o);
-  });
-}
-function loadRecCfg(){
-  const k=document.getElementById('rec-month').value;
-  const rec=(S.recaudadores||{})[k]||'';
-  document.getElementById('rec-fam').value=rec;
-}
-window.loadRecCfg=loadRecCfg;
-window.saveRecCfg=async function(){
-  const k=document.getElementById('rec-month').value;
-  const fam=document.getElementById('rec-fam').value;
-  if(!S.recaudadores)S.recaudadores={};
-  if(fam)S.recaudadores[k]=fam;
-  else delete S.recaudadores[k];
+window.toggleRec=async function(name){
+  if(S.recaudador===name) S.recaudador='';
+  else S.recaudador=name;
   await save();
-  document.getElementById('rec-alert').innerHTML=`<div class="alert a-ok">✓ Guardado</div>`;
-  setTimeout(()=>document.getElementById('rec-alert').innerHTML='',2500);
+  renderAdmFams();
   renderPagos();
 };
 
@@ -534,7 +504,7 @@ function renderPagos(){
   document.getElementById('prog-f').style.width=pct+'%';
   const br=document.getElementById('bday-row');br.innerHTML='';
   // Recaudador banner
-  const recName=(S.recaudadores||{})[k];
+  const recName=S.recaudador||'';
   const recFam=recName?(S.families||[]).find(f=>f.name===recName):null;
   const recBanner=document.getElementById('rec-banner');
   if(recFam){
@@ -814,7 +784,7 @@ window.doLogout=function(){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById('pg-pagos').classList.add('on');
 };
-function renderAdminPanel(){loadMontoCfg();loadRecCfg();fillRecFam();renderAdmFams();renderAdmPagos();}
+function renderAdminPanel(){loadMontoCfg();renderAdmFams();renderAdmPagos();}
 function loadMontoCfg(){
   const k=document.getElementById('adm-month').value;
   document.getElementById('adm-monto').value=S.montos[k]||10000;
@@ -907,7 +877,7 @@ window.saveFam=async function(){
     if(oldName!==name&&S.pagos){Object.keys(S.pagos).forEach(k=>{if(S.pagos[k][oldName]){S.pagos[k][name]=S.pagos[k][oldName];delete S.pagos[k][oldName];}});}
     S.families[editFamIdx]=fam;
   }
-  await save();closeMoFam();renderAdmFams();fillSelects();fillRecFam();
+  await save();closeMoFam();renderAdmFams();fillSelects();
   const body=document.getElementById('fam-body');
   if(famOpen)body.style.maxHeight=body.scrollHeight+600+'px';
 };
@@ -921,15 +891,20 @@ function renderAdmFams(){
   sorted.forEach(f=>{
     const div=document.createElement('div');div.className='fam-card';
     const ks=f.kids&&f.kids.length?f.kids.map(k=>`${k.name} (${k.day?k.day+' de ':''}${MN[k.month]})`).join(', '):'Sin hijos';
+    const isRec=(S.recaudador||'')=== f.name;
     div.innerHTML=`
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
         <div>
-          <div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
+            ${isRec?`<span style="font-size:13px" title="Recaudadora actual">👑</span>`:''}
+          </div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px">🎂 ${ks}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:1px">✉️ ${f.email||'Sin mail'}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:1px">🏦 ${f.alias||'Sin alias'}</div>
         </div>
-        <div style="display:flex;gap:6px;flex-shrink:0">
+        <div style="display:flex;gap:6px;flex-shrink:0;align-items:flex-start">
+          <button title="${isRec?'Quitar recaudadora':'Hacer recaudadora'}" style="background:${isRec?'#FEF9C3':'var(--card)'};border:1.5px solid ${isRec?'#FCD34D':'var(--border)'};border-radius:8px;padding:7px 10px;min-height:36px;font-size:14px;cursor:pointer" onclick="toggleRec('${esc(f.name)}')">👑</button>
           <button class="btn-outline-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="openEditFam(${f._idx})">Editar</button>
           <button class="btn-danger-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="rmFam(${f._idx})">✕</button>
         </div>
@@ -983,7 +958,6 @@ window.rmPago=async function(fam,pi,k){
 document.getElementById('adm-pagos-month').addEventListener('change',renderAdmPagos);
 document.getElementById('adm-month').addEventListener('change',loadMontoCfg);
 document.getElementById('sel-month').addEventListener('change',renderPagos);
-document.getElementById('rec-month').addEventListener('change',loadRecCfg);
 init();
 </script>
 </body>

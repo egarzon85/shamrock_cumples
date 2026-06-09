@@ -524,7 +524,7 @@ function renderPagos(){
     recBanner.innerHTML=`<div class="rec-banner">
       <div class="rec-banner-icon">💳</div>
       <div>
-        <div class="rec-banner-text">Transferí a: ${recFam.name}</div>
+        <div class="rec-banner-text">Transferencias a: ${recFam.name}</div>
         ${recFam.alias
           ?`<div class="rec-banner-alias" onclick="copyAlias('${esc(recFam.alias)}')" style="cursor:pointer">${recFam.alias}</div>`
           :'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}

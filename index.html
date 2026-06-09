@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Cumples Shamrock</title>
+<title>Velitas</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -46,10 +46,10 @@ select,input[type=text],input[type=number],input[type=password],input[type=email
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7080' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;background-size:16px;}
 select:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,127,212,0.15)}
 input::placeholder{color:var(--muted)}
+input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,38,38,0.12)!important}
 
-/* Header */
 .hdr{background:var(--accent);color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;transition:background .2s}
-.hdr h1{font-size:15px;font-weight:800;font-family:'Syne',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}
+.hdr h1{font-size:15px;font-weight:800;font-family:'Syne',system-ui,sans-serif;flex-shrink:1;min-width:0;line-height:1.2;white-space:nowrap}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .admin-link{font-size:11px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:transparent;font-family:'DM Sans',system-ui,sans-serif;white-space:nowrap}
 .admin-link:active{background:rgba(255,255,255,.15)}
@@ -58,11 +58,8 @@ input::placeholder{color:var(--muted)}
 .toggle-knob{width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 [data-theme="dark"] .toggle-knob{transform:translateX(16px)}
 .toggle-icon{font-size:13px;margin-right:3px}
-
 .pg{display:none;padding:14px 14px 40px;max-width:480px;margin:0 auto}
 .pg.on{display:block}
-
-/* Buttons */
 .btn-pay{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:44px;transition:background .2s}
 .btn-pay:active{opacity:.85}
 .btn-add-pay{background:var(--email-bg);color:var(--accent);border:2px solid var(--accent);border-radius:10px;padding:9px 16px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:44px;transition:all .2s}
@@ -73,8 +70,6 @@ input::placeholder{color:var(--muted)}
 .btn-outline-sm:active{opacity:.85}
 .btn-warning{background:var(--part);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:50px}
 .btn-warning:active{opacity:.85}
-.btn-danger{background:var(--danger);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;width:100%;min-height:50px}
-.btn-danger:active{opacity:.85}
 .btn-danger-sm{background:var(--danger-bg);color:var(--danger);border:2px solid var(--danger-bd);border-radius:8px;padding:8px 12px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer;min-height:38px;transition:all .2s}
 .btn-danger-sm:active{opacity:.85}
 .btn-cancel{background:var(--card);color:var(--muted);border:1.5px solid var(--border);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
@@ -83,8 +78,6 @@ input::placeholder{color:var(--muted)}
 .btn-notif:active{opacity:.85}
 .btn-pin{background:var(--card);color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;transition:all .2s}
 .btn-pin:active{opacity:.85}
-
-/* Cards */
 .fam-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 14px 12px;margin-bottom:10px;transition:background .2s,border-color .2s}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .stat{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center;transition:background .2s}
@@ -134,19 +127,19 @@ input::placeholder{color:var(--muted)}
 .email-section-title{font-size:13px;font-weight:700;color:var(--email-title);margin-bottom:8px}
 .email-section.warn .email-section-title{color:var(--email-warn-title)}
 .admin-back-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1.5px solid var(--border);padding:10px 14px;margin:-14px -14px 14px;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
-
-/* Collapsible families */
 .collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;user-select:none}
 .collapse-header:active{opacity:.7}
 .collapse-arrow{font-size:12px;color:var(--muted);transition:transform .2s}
 .collapse-arrow.open{transform:rotate(180deg)}
 .collapse-body{overflow:hidden;transition:max-height .3s ease}
+.field-hint{font-size:11px;color:var(--danger);margin-top:4px;display:none}
+.field-hint.show{display:block}
 </style>
 </head>
 <body>
 
 <div class="hdr">
-  <h1>🎂 CUMPLES SHAMROCK</h1>
+  <h1 style="font-size:22px;letter-spacing:3px;font-weight:800">VELITAS</h1>
   <div class="hdr-right">
     <div class="dark-toggle" onclick="toggleDark()">
       <span class="toggle-icon" id="toggle-icon">🌙</span>
@@ -156,7 +149,6 @@ input::placeholder{color:var(--muted)}
   </div>
 </div>
 
-<!-- PAGOS -->
 <div id="pg-pagos" class="pg on">
   <div id="loading-pagos" class="loading">Cargando datos...</div>
   <div id="pagos-content" style="display:none">
@@ -169,7 +161,6 @@ input::placeholder{color:var(--muted)}
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="pg-admin" class="pg">
   <div id="lock-screen" class="lock-screen">
     <div style="font-size:48px;margin-bottom:12px">🔒</div>
@@ -199,8 +190,6 @@ input::placeholder{color:var(--muted)}
     <div id="monto-alert"></div>
 
     <div class="divider"></div>
-
-    <!-- Collapsible families -->
     <div class="collapse-header" onclick="toggleFamilies()">
       <span class="sec-title" style="margin:0">Familias del grupo <span id="fam-count" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px"></span></span>
       <span class="collapse-arrow" id="fam-arrow">▼</span>
@@ -214,12 +203,14 @@ input::placeholder{color:var(--muted)}
 
     <div class="divider"></div>
     <button class="btn-notif" onclick="openMoNotif()" style="margin-bottom:10px">✉️ Notificaciones por mail</button>
-    <button class="btn-pin" onclick="openMoPin()">🔑 Cambiar PIN</button>
 
     <div class="divider"></div>
     <div class="sec-title">Pagos registrados</div>
     <div class="form-group"><select id="adm-pagos-month" onchange="renderAdmPagos()"></select></div>
     <div id="adm-pagos-list"></div>
+
+    <div class="divider"></div>
+    <button class="btn-pin" onclick="openMoPin()">🔑 Cambiar PIN</button>
   </div>
 </div>
 
@@ -247,7 +238,7 @@ input::placeholder{color:var(--muted)}
   </div>
 </div>
 
-<!-- Modal: cambiar PIN -->
+<!-- Modal: PIN -->
 <div id="mo-pin" class="mo" style="display:none">
   <div class="mo-box">
     <div class="mo-handle"></div>
@@ -274,10 +265,10 @@ input::placeholder{color:var(--muted)}
     <div class="form-group"><span class="lbl">Nombre</span><input type="text" id="mo-fam-name" placeholder="Ej: Familia González"></div>
     <div class="form-group"><span class="lbl">Email</span><input type="email" id="mo-fam-email" placeholder="familia@gmail.com"></div>
     <span class="lbl">Hijos</span>
-    <div style="display:flex;gap:6px;margin-top:4px;margin-bottom:8px;flex-wrap:wrap">
+    <div style="display:flex;gap:6px;margin-top:4px;margin-bottom:4px;flex-wrap:wrap">
       <input type="text" id="kid-name" placeholder="Nombre" style="flex:2;min-width:100px;width:auto">
-      <input type="number" id="kid-day" placeholder="Día" min="1" max="31" style="flex:1;min-width:60px;width:auto">
-      <select id="kid-month" style="flex:2;min-width:110px">
+      <input type="number" id="kid-day" placeholder="Día" min="1" max="31" inputmode="numeric" style="flex:1;min-width:60px;width:auto" oninput="validateDay()">
+      <select id="kid-month" style="flex:2;min-width:110px" onchange="validateDay()">
         <option value="">Mes</option>
         <option value="0">Enero</option><option value="1">Febrero</option>
         <option value="2">Marzo</option><option value="3">Abril</option>
@@ -287,7 +278,8 @@ input::placeholder{color:var(--muted)}
         <option value="10">Noviembre</option><option value="11">Diciembre</option>
       </select>
     </div>
-    <button class="btn-outline-sm" onclick="addKid()" style="width:100%;margin-bottom:10px">+ Agregar hijo</button>
+    <div id="day-hint" class="field-hint">Día inválido para este mes</div>
+    <button class="btn-outline-sm" onclick="addKid()" style="width:100%;margin-top:8px;margin-bottom:10px">+ Agregar hijo</button>
     <div id="kids-list"></div>
     <div class="mo-btns">
       <button class="btn-cancel" onclick="closeMoFam()">Cancelar</button>
@@ -344,14 +336,16 @@ const firebaseConfig = {
   messagingSenderId: "703002714132",
   appId: "1:703002714132:web:295ac8b787696ec9e1c701"
 };
-const EJS_PUBLIC="UOfV2W5iOKxiX6CgE", EJS_SERVICE="service_nm5mn5d";
-const EJS_TMPL_MONTHLY="template_2420g7d", EJS_TMPL_REMINDER="template_pbm0aug";
+const EJS_PUBLIC="UOfV2W5iOKxiX6CgE",EJS_SERVICE="service_nm5mn5d";
+const EJS_TMPL_MONTHLY="template_2420g7d",EJS_TMPL_REMINDER="template_pbm0aug";
 emailjs.init(EJS_PUBLIC);
 
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 const DOC=doc(db,"app","data");
 const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+// Max days per month (non-leap for simplicity, Feb=28)
+const MAX_DAYS=[31,28,31,30,31,30,31,31,30,31,30,31];
 let S=null,adminOk=false,payCtx=null,tmpFile=null,editFamIdx=null,tmpKids=[];
 
 // ── Dark mode ─────────────────────────────────────────────────────────────
@@ -409,8 +403,6 @@ function status(fn,k,due){
 }
 function fmtARS(n){return Math.round(n).toLocaleString('es-AR');}
 function esc(s){return s.replace(/'/g,"\\'");}
-
-// Returns: 'current' | 'prev' | 'old'
 function monthAge(k){
   const now=new Date();
   const curKey=mk(now.getFullYear(),now.getMonth());
@@ -418,21 +410,43 @@ function monthAge(k){
   const prevKey=mk(prevDate.getFullYear(),prevDate.getMonth());
   if(k===curKey)return'current';
   if(k===prevKey)return'prev';
-  // future months
   const[y,m]=k.split('-');
-  const kDate=new Date(+y,+m,1);
-  if(kDate>new Date(now.getFullYear(),now.getMonth(),1))return'current';
+  if(new Date(+y,+m,1)>new Date(now.getFullYear(),now.getMonth(),1))return'current';
   return'old';
 }
 
+// Day validation
+function maxDayForMonth(m){
+  if(m===''||m===null||m===undefined)return 31;
+  return MAX_DAYS[+m]||31;
+}
+window.validateDay=function(){
+  const dayEl=document.getElementById('kid-day');
+  const m=document.getElementById('kid-month').value;
+  const hint=document.getElementById('day-hint');
+  const day=parseInt(dayEl.value)||0;
+  if(!day){dayEl.classList.remove('error');hint.classList.remove('show');return true;}
+  const max=maxDayForMonth(m);
+  if(day<1||day>max){
+    dayEl.classList.add('error');
+    hint.textContent=m===''?`Día inválido (máx 31)`:`Día inválido para ${MN[+m]} (máx ${max})`;
+    hint.classList.add('show');return false;
+  }
+  dayEl.classList.remove('error');hint.classList.remove('show');return true;
+};
+
+// ── Fill selects with birthday count ─────────────────────────────────────
 function fillSelects(){
   const now=new Date(),y=now.getFullYear(),cm=now.getMonth();
   ['sel-month','adm-month','adm-pagos-month','email-month','remind-month'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     el.innerHTML='';
     for(let m=0;m<12;m++){
+      const k=mk(y,m);
+      const bdays=bdayKidsThisMonth(m);
       const o=document.createElement('option');
-      o.value=mk(y,m);o.text=`${MN[m]} ${y}`;
+      o.value=k;
+      o.text=bdays.length>0?`${MN[m]} (${bdays.length} 🎂)`:MN[m];
       if(m===cm)o.selected=true;
       el.appendChild(o);
     }
@@ -468,48 +482,33 @@ function renderPagos(){
   }
   const list=document.getElementById('fam-list');list.innerHTML='';
   if(!(S.families||[]).length){list.innerHTML='<div class="empty">No hay familias cargadas</div>';return;}
-  (S.families||[]).forEach(f=>{
+
+  // Sort alphabetically
+  const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
+
+  sorted.forEach(f=>{
     const due=effectiveDue(f,mi,mpk),p=paidAmt(f.name,k);
     const st=due===0?'no-due':status(f.name,k,due);
     const pct2=due>0?Math.min(100,Math.round(p/due*100)):0;
     const ownBdays=(f.kids||[]).filter(ki=>+ki.month===mi);
     const payFor=Math.max(0,bdays.length-ownBdays.length);
     let badge='',action='',subtext='';
-
     if(st==='no-due'){
       badge=`<span class="badge b-free">🎂 No paga</span>`;
       subtext=`Cumple: ${ownBdays.map(k=>k.name).join(', ')}`;
     } else if(age==='old'){
-      // 2+ months ago — read only
       const didPay=st==='verified'||st==='declared'||st==='partial';
-      badge=didPay
-        ?`<span class="badge b-ok">✓ Pagó</span>`
-        :`<span class="badge b-old">No pagó</span>`;
+      badge=didPay?`<span class="badge b-ok">✓ Pagó</span>`:`<span class="badge b-old">No pagó</span>`;
       subtext=`$${fmtARS(p)} de $${fmtARS(due)}`;
     } else {
       subtext=`$${fmtARS(p)} de $${fmtARS(due)}`;
       if(ownBdays.length>0)subtext+=` · paga por ${payFor} cumple${payFor>1?'s':''}`;
-      if(st==='verified'){
-        badge=`<span class="badge b-ok">✓ Verificado</span>`;
-        action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;
-      } else if(st==='declared'){
-        badge=`<span class="badge b-dec">📋 Declarado</span>`;
-        action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;
-      } else if(st==='partial'){
-        badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;
-        action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar resto</button>`;
-      } else {
-        // pending
-        if(age==='prev'){
-          badge=`<span class="badge b-late">⚠️ Atrasado</span>`;
-          action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;
-        } else {
-          badge=`<span class="badge b-pend">Pendiente</span>`;
-          action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;
-        }
-      }
+      if(st==='verified'){badge=`<span class="badge b-ok">✓ Verificado</span>`;action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;}
+      else if(st==='declared'){badge=`<span class="badge b-dec">📋 Declarado</span>`;action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;}
+      else if(st==='partial'){badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar resto</button>`;}
+      else if(age==='prev'){badge=`<span class="badge b-late">⚠️ Atrasado</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;}
+      else{badge=`<span class="badge b-pend">Pendiente</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;}
     }
-
     const div=document.createElement('div');div.className='fam-card';
     div.innerHTML=`
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:${due>0?8:10}px">
@@ -576,7 +575,7 @@ window.toggleFamilies=function(){
   famOpen=!famOpen;
   const body=document.getElementById('fam-body');
   const arrow=document.getElementById('fam-arrow');
-  body.style.maxHeight=famOpen?body.scrollHeight+500+'px':'0';
+  body.style.maxHeight=famOpen?body.scrollHeight+600+'px':'0';
   arrow.classList.toggle('open',famOpen);
 };
 
@@ -614,8 +613,7 @@ window.sendMonthlyEmails=async function(){
   btn.disabled=false;btn.textContent='📨 Enviar mails de inicio de mes';
   alertEl.innerHTML=`<div class="alert ${errors&&!sent?'a-err':'a-ok'}">${sent} mails enviados${errors?`, ${errors} con error`:''}.</div>`;
   setTimeout(()=>alertEl.innerHTML='',5000);
-  if(!S.emailLog)S.emailLog={};
-  S.emailLog[`monthly_${k}`]=Date.now();await save();
+  if(!S.emailLog)S.emailLog={};S.emailLog[`monthly_${k}`]=Date.now();await save();
 };
 window.sendReminderEmails=async function(){
   const k=document.getElementById('remind-month').value;
@@ -713,6 +711,8 @@ window.openAddFam=function(){
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
+  document.getElementById('kid-day').classList.remove('error');
+  document.getElementById('day-hint').classList.remove('show');
   renderKidsList();
   document.getElementById('mo-fam').style.display='flex';
 };
@@ -726,6 +726,8 @@ window.openEditFam=function(i){
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
+  document.getElementById('kid-day').classList.remove('error');
+  document.getElementById('day-hint').classList.remove('show');
   renderKidsList();
   document.getElementById('mo-fam').style.display='flex';
 };
@@ -735,10 +737,13 @@ window.addKid=function(){
   const d=parseInt(document.getElementById('kid-day').value)||null;
   const m=document.getElementById('kid-month').value;
   if(!n||m===''){alert('Completá nombre y mes');return;}
+  if(!window.validateDay()){alert('El día ingresado no es válido para ese mes');return;}
   tmpKids.push({name:n,day:d,month:+m});
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
+  document.getElementById('kid-day').classList.remove('error');
+  document.getElementById('day-hint').classList.remove('show');
   renderKidsList();
 };
 window.rmKid=function(i){tmpKids.splice(i,1);renderKidsList();};
@@ -766,17 +771,18 @@ window.saveFam=async function(){
     if(oldName!==name&&S.pagos){Object.keys(S.pagos).forEach(k=>{if(S.pagos[k][oldName]){S.pagos[k][name]=S.pagos[k][oldName];delete S.pagos[k][oldName];}});}
     S.families[editFamIdx]=fam;
   }
-  await save();closeMoFam();renderAdmFams();
-  // update collapse height
+  await save();closeMoFam();renderAdmFams();fillSelects();
   const body=document.getElementById('fam-body');
-  if(famOpen)body.style.maxHeight=body.scrollHeight+500+'px';
+  if(famOpen)body.style.maxHeight=body.scrollHeight+600+'px';
 };
 function renderAdmFams(){
   const el=document.getElementById('adm-fam-list');el.innerHTML='';
   const count=(S.families||[]).length;
   document.getElementById('fam-count').textContent=count?`(${count})`:'';
   if(!count){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
-  S.families.forEach((f,i)=>{
+  // Admin list sorted alphabetically too
+  const sorted=[...(S.families||[])].map((f,i)=>({...f,_idx:i})).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  sorted.forEach(f=>{
     const div=document.createElement('div');div.className='fam-card';
     const ks=f.kids&&f.kids.length?f.kids.map(k=>`${k.name} (${k.day?k.day+' de ':''}${MN[k.month]})`).join(', '):'Sin hijos';
     div.innerHTML=`
@@ -787,20 +793,21 @@ function renderAdmFams(){
           <div style="font-size:12px;color:var(--muted);margin-top:1px">✉️ ${f.email||'Sin mail'}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
-          <button class="btn-outline-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="openEditFam(${i})">Editar</button>
-          <button class="btn-danger-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="rmFam(${i})">✕</button>
+          <button class="btn-outline-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="openEditFam(${f._idx})">Editar</button>
+          <button class="btn-danger-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="rmFam(${f._idx})">✕</button>
         </div>
       </div>`;
     el.appendChild(div);
   });
 }
-window.rmFam=async function(i){S.families.splice(i,1);await save();renderAdmFams();};
+window.rmFam=async function(i){S.families.splice(i,1);await save();renderAdmFams();fillSelects();};
 function renderAdmPagos(){
   const k=document.getElementById('adm-pagos-month').value;
   const[y,m]=k.split('-'),mi=+m,mpk=getMontoPerKid(k);
   const el=document.getElementById('adm-pagos-list');el.innerHTML='';
   if(!(S.families||[]).length){el.innerHTML='<div class="empty">Sin familias</div>';return;}
-  S.families.forEach(f=>{
+  const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  sorted.forEach(f=>{
     const due=effectiveDue(f,mi,mpk),ps=getPagos(f.name,k),p=paidAmt(f.name,k);
     const st=due===0?'no-due':status(f.name,k,due);
     let bc='b-pend',bl='Pendiente';

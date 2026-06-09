@@ -3,82 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Cumples del Jardín</title>
+<title>Cumples Shamrock</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
-/* ── Light mode (default) ── */
 :root{
   --bg:#F5F3EE;--card:#FFFFFF;--border:#DDD8CE;--text:#18181E;--muted:#6B7080;
-  --accent:#2C3E6B;--accent2:#1E2D52;--gold:#C8960A;
+  --accent:#2C3E6B;--gold:#C8960A;
   --ok:#166534;--ok-bg:#DCFCE7;--ok-bd:#86EFAC;
   --dec:#4C3D8A;--dec-bg:#EDE9FE;--dec-bd:#C4B5FD;
   --part:#92400E;--part-bg:#FEF3C7;--part-bd:#FCD34D;
   --pend:#7C2D12;--pend-bg:#FEE2E2;--pend-bd:#FCA5A5;
+  --late:#854D0E;--late-bg:#FEF9C3;--late-bd:#FDE047;
   --danger:#DC2626;--danger-bg:#FEF2F2;--danger-bd:#FCA5A5;
   --free-bg:#F0FDF4;--free-color:#166534;--free-bd:#86EFAC;
-  --input-bg:#FFFFFF;--shadow:rgba(0,0,0,.06);
+  --input-bg:#FFFFFF;
   --email-bg:#EFF6FF;--email-bd:#BFDBFE;--email-title:#1D4ED8;
   --email-warn-bg:#FFF7ED;--email-warn-bd:#FED7AA;--email-warn-title:#92400E;
-  --toggle-bg:#E2DDD4;--toggle-knob:#FFFFFF;
+  --toggle-bg:#E2DDD4;
 }
-
-/* ── Dark mode ── */
 [data-theme="dark"]{
   --bg:#0F1117;--card:#1A1D27;--border:#2A2D3A;--text:#E8E8F0;--muted:#8A8FA8;
-  --accent:#5B7FD4;--accent2:#4A6BC0;--gold:#D4A017;
+  --accent:#5B7FD4;--gold:#D4A017;
   --ok:#22C55E;--ok-bg:#052E16;--ok-bd:#166534;
   --dec:#A78BFA;--dec-bg:#1E1B4B;--dec-bd:#4C3D8A;
   --part:#FCD34D;--part-bg:#1C1400;--part-bd:#92400E;
   --pend:#FCA5A5;--pend-bg:#1C0000;--pend-bd:#7C2D12;
+  --late:#FDE047;--late-bg:#1C1500;--late-bd:#854D0E;
   --danger:#F87171;--danger-bg:#1C0000;--danger-bd:#7C2D12;
   --free-bg:#052E16;--free-color:#22C55E;--free-bd:#166534;
-  --input-bg:#22253A;--shadow:rgba(0,0,0,.3);
+  --input-bg:#22253A;
   --email-bg:#1A1D35;--email-bd:#2A3A6A;--email-title:#7BA7F5;
   --email-warn-bg:#1C1200;--email-warn-bd:#6B3A00;--email-warn-title:#FCD34D;
-  --toggle-bg:#5B7FD4;--toggle-knob:#FFFFFF;
+  --toggle-bg:#5B7FD4;
 }
-
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;transition:background .2s,color .2s}
-
 select,input[type=text],input[type=number],input[type=password],input[type=email]{
   width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;
   font-family:'DM Sans',system-ui,sans-serif;font-size:15px;
-  background:var(--input-bg);color:var(--text);min-height:48px;-webkit-appearance:none;appearance:none;
-  transition:background .2s,border-color .2s,color .2s;
+  background:var(--input-bg);color:var(--text);min-height:48px;-webkit-appearance:none;appearance:none;transition:background .2s,border-color .2s,color .2s;
 }
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7080' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;background-size:16px;}
 select:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,127,212,0.15)}
 input::placeholder{color:var(--muted)}
 
 /* Header */
-.hdr{background:var(--accent);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
-.hdr h1{font-size:17px;font-weight:800;font-family:'Syne',system-ui,sans-serif}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.hdr-sub{font-size:11px;color:rgba(255,255,255,.6)}
-.admin-link{font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:transparent;font-family:'DM Sans',system-ui,sans-serif}
+.hdr{background:var(--accent);color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;transition:background .2s}
+.hdr h1{font-size:15px;font-weight:800;font-family:'Syne',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.admin-link{font-size:11px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:transparent;font-family:'DM Sans',system-ui,sans-serif;white-space:nowrap}
 .admin-link:active{background:rgba(255,255,255,.15)}
-
-/* Dark mode toggle */
-.dark-toggle{display:flex;align-items:center;cursor:pointer;gap:0}
-.toggle-track{width:36px;height:20px;background:var(--toggle-bg);border-radius:99px;position:relative;transition:background .2s;flex-shrink:0}
-.toggle-knob{width:16px;height:16px;background:var(--toggle-knob);border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s,background .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.dark-toggle{display:flex;align-items:center;cursor:pointer}
+.toggle-track{width:34px;height:18px;background:var(--toggle-bg);border-radius:99px;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-knob{width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 [data-theme="dark"] .toggle-knob{transform:translateX(16px)}
-.toggle-icon{font-size:14px;margin-right:4px}
+.toggle-icon{font-size:13px;margin-right:3px}
 
-/* Pages */
 .pg{display:none;padding:14px 14px 40px;max-width:480px;margin:0 auto}
 .pg.on{display:block}
 
 /* Buttons */
-.btn-pay{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:46px;transition:background .2s}
+.btn-pay{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:44px;transition:background .2s}
 .btn-pay:active{opacity:.85}
-.btn-add-pay{background:var(--email-bg);color:var(--accent);border:2px solid var(--accent);border-radius:10px;padding:10px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:46px;transition:all .2s}
+.btn-add-pay{background:var(--email-bg);color:var(--accent);border:2px solid var(--accent);border-radius:10px;padding:9px 16px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:44px;transition:all .2s}
 .btn-add-pay:active{opacity:.85}
 .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:50px;transition:background .2s}
 .btn-primary:active{opacity:.85}
-.btn-outline-sm{background:var(--email-bg);color:var(--accent);border:2px solid var(--accent);border-radius:8px;padding:10px 16px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.btn-outline-sm{background:var(--email-bg);color:var(--accent);border:2px solid var(--accent);border-radius:8px;padding:9px 14px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;min-height:42px;white-space:nowrap;flex-shrink:0;transition:all .2s}
 .btn-outline-sm:active{opacity:.85}
 .btn-warning{background:var(--part);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:50px}
 .btn-warning:active{opacity:.85}
@@ -88,8 +79,10 @@ input::placeholder{color:var(--muted)}
 .btn-danger-sm:active{opacity:.85}
 .btn-cancel{background:var(--card);color:var(--muted);border:1.5px solid var(--border);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
 .btn-cancel:active{opacity:.85}
-.btn-back{background:var(--card);color:var(--accent);border:1.5px solid var(--border);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;transition:all .2s}
-.btn-back:active{opacity:.85}
+.btn-notif{background:var(--email-bg);color:var(--email-title);border:1.5px solid var(--email-bd);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;transition:all .2s}
+.btn-notif:active{opacity:.85}
+.btn-pin{background:var(--card);color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;transition:all .2s}
+.btn-pin:active{opacity:.85}
 
 /* Cards */
 .fam-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 14px 12px;margin-bottom:10px;transition:background .2s,border-color .2s}
@@ -107,7 +100,9 @@ input::placeholder{color:var(--muted)}
 .b-dec{background:var(--dec-bg);color:var(--dec);border-color:var(--dec-bd)}
 .b-part{background:var(--part-bg);color:var(--part);border-color:var(--part-bd)}
 .b-pend{background:var(--pend-bg);color:var(--pend);border-color:var(--pend-bd)}
+.b-late{background:var(--late-bg);color:var(--late);border-color:var(--late-bd)}
 .b-free{background:var(--free-bg);color:var(--free-color);border-color:var(--free-bd)}
+.b-old{background:var(--card);color:var(--muted);border-color:var(--border)}
 .bday-chip{background:var(--part-bg);color:var(--part);border:1.5px solid var(--part-bd);border-radius:99px;padding:5px 13px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin:2px 3px 2px 0}
 .sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin:16px 0 8px}
 .lbl{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
@@ -122,8 +117,6 @@ input::placeholder{color:var(--muted)}
 .lock-screen{display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 16px}
 .pin-row{display:flex;gap:12px;justify-content:center;margin:16px 0}
 .pin-row input{width:54px!important;height:60px!important;text-align:center;font-size:24px!important;font-weight:800;border:2px solid var(--border)!important;border-radius:12px;padding:0!important}
-
-/* Modal */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:200;padding:0}
 .mo-box{background:var(--card);border-radius:20px 20px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;transition:background .2s}
 .mo-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 18px}
@@ -136,28 +129,26 @@ input::placeholder{color:var(--muted)}
 .thumb{max-width:100%;border-radius:8px;margin-top:8px;max-height:160px;object-fit:contain;border:1.5px solid var(--border)}
 .month-bar{margin-bottom:14px}
 .loading{text-align:center;padding:40px;color:var(--muted);font-size:14px}
-
-/* Email section */
 .email-section{border:1.5px solid var(--email-bd);border-radius:12px;padding:14px;background:var(--email-bg);transition:all .2s}
 .email-section.warn{background:var(--email-warn-bg);border-color:var(--email-warn-bd)}
 .email-section-title{font-size:13px;font-weight:700;color:var(--email-title);margin-bottom:8px}
 .email-section.warn .email-section-title{color:var(--email-warn-title)}
+.admin-back-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1.5px solid var(--border);padding:10px 14px;margin:-14px -14px 14px;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
 
-/* Notif button in admin */
-.btn-notif{background:var(--email-bg);color:var(--email-title);border:1.5px solid var(--email-bd);border-radius:10px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;transition:all .2s}
-.btn-notif:active{opacity:.85}
-
-/* Admin back bar */
-.admin-back-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1.5px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;margin:-14px -14px 14px;transition:background .2s}
+/* Collapsible families */
+.collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;user-select:none}
+.collapse-header:active{opacity:.7}
+.collapse-arrow{font-size:12px;color:var(--muted);transition:transform .2s}
+.collapse-arrow.open{transform:rotate(180deg)}
+.collapse-body{overflow:hidden;transition:max-height .3s ease}
 </style>
 </head>
 <body>
 
 <div class="hdr">
-  <h1>🎂 Cumples del jardín</h1>
+  <h1>🎂 CUMPLES SHAMROCK</h1>
   <div class="hdr-right">
-    <span class="hdr-sub" id="hdr-sub">Cargando...</span>
-    <div class="dark-toggle" onclick="toggleDark()" title="Modo oscuro">
+    <div class="dark-toggle" onclick="toggleDark()">
       <span class="toggle-icon" id="toggle-icon">🌙</span>
       <div class="toggle-track"><div class="toggle-knob"></div></div>
     </div>
@@ -193,11 +184,9 @@ input::placeholder{color:var(--muted)}
     <div id="pin-err" class="alert a-err" style="display:none">PIN incorrecto</div>
     <p style="font-size:12px;color:var(--muted);margin-top:8px">PIN por defecto: <strong>1234</strong></p>
   </div>
-
   <div id="admin-panel" style="display:none">
-    <!-- Sticky back bar top -->
     <div class="admin-back-bar">
-      <button class="btn-cancel" style="flex:1" onclick="doLogout()">← Volver</button>
+      <button class="btn-cancel" style="min-height:38px;padding:8px 16px" onclick="doLogout()">← Volver</button>
       <span style="font-size:13px;font-weight:700;color:var(--muted)">Panel Admin</span>
     </div>
 
@@ -210,29 +199,27 @@ input::placeholder{color:var(--muted)}
     <div id="monto-alert"></div>
 
     <div class="divider"></div>
-    <div class="sec-title">Familias y sus hijos</div>
-    <button class="btn-outline-sm" onclick="openAddFam()" style="width:100%;margin-bottom:12px">+ Agregar familia</button>
-    <div id="adm-fam-list"></div>
+
+    <!-- Collapsible families -->
+    <div class="collapse-header" onclick="toggleFamilies()">
+      <span class="sec-title" style="margin:0">Familias del grupo <span id="fam-count" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px"></span></span>
+      <span class="collapse-arrow" id="fam-arrow">▼</span>
+    </div>
+    <div class="collapse-body" id="fam-body" style="max-height:0">
+      <div style="padding-top:10px">
+        <button class="btn-outline-sm" onclick="openAddFam()" style="width:100%;margin-bottom:12px">+ Agregar familia</button>
+        <div id="adm-fam-list"></div>
+      </div>
+    </div>
 
     <div class="divider"></div>
-    <button class="btn-notif" onclick="openMoNotif()">✉️ Notificaciones por mail</button>
+    <button class="btn-notif" onclick="openMoNotif()" style="margin-bottom:10px">✉️ Notificaciones por mail</button>
+    <button class="btn-pin" onclick="openMoPin()">🔑 Cambiar PIN</button>
 
     <div class="divider"></div>
     <div class="sec-title">Pagos registrados</div>
     <div class="form-group"><select id="adm-pagos-month" onchange="renderAdmPagos()"></select></div>
     <div id="adm-pagos-list"></div>
-
-    <div class="divider"></div>
-    <div class="sec-title">Cambiar PIN</div>
-    <div style="display:flex;gap:8px;margin-bottom:4px">
-      <input type="password" id="new-pin" maxlength="4" placeholder="Nuevo PIN (4 dígitos)" inputmode="numeric" style="flex:1;width:auto">
-      <button class="btn-outline-sm" onclick="changePin()">Guardar</button>
-    </div>
-    <div id="pin-alert"></div>
-
-    <!-- Back button bottom -->
-    <div class="divider"></div>
-    <button class="btn-back" onclick="doLogout()">← Volver</button>
   </div>
 </div>
 
@@ -256,8 +243,24 @@ input::placeholder{color:var(--muted)}
       <button class="btn-warning" id="btn-remind" onclick="sendReminderEmails()">⏰ Enviar recordatorios</button>
       <div id="remind-alert"></div>
     </div>
-    <div style="margin-top:16px">
-      <button class="btn-cancel" style="width:100%" onclick="closeMoNotif()">Cerrar</button>
+    <div style="margin-top:16px"><button class="btn-cancel" style="width:100%" onclick="closeMoNotif()">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- Modal: cambiar PIN -->
+<div id="mo-pin" class="mo" style="display:none">
+  <div class="mo-box">
+    <div class="mo-handle"></div>
+    <h3>🔑 Cambiar PIN</h3>
+    <div class="mo-sub">Ingresá el nuevo PIN de 4 dígitos</div>
+    <div class="form-group">
+      <span class="lbl">Nuevo PIN</span>
+      <input type="password" id="new-pin" maxlength="4" placeholder="4 dígitos" inputmode="numeric">
+    </div>
+    <div id="pin-alert"></div>
+    <div class="mo-btns">
+      <button class="btn-cancel" onclick="closeMoPin()">Cancelar</button>
+      <button class="btn-primary" style="flex:1" onclick="changePin()">Guardar PIN</button>
     </div>
   </div>
 </div>
@@ -268,14 +271,8 @@ input::placeholder{color:var(--muted)}
     <div class="mo-handle"></div>
     <h3 id="mo-fam-title">Nueva familia</h3>
     <div class="mo-sub">Nombre, mail y los hijos con día y mes de cumpleaños</div>
-    <div class="form-group">
-      <span class="lbl">Nombre de la familia</span>
-      <input type="text" id="mo-fam-name" placeholder="Ej: Familia González">
-    </div>
-    <div class="form-group">
-      <span class="lbl">Email</span>
-      <input type="email" id="mo-fam-email" placeholder="familia@gmail.com">
-    </div>
+    <div class="form-group"><span class="lbl">Nombre</span><input type="text" id="mo-fam-name" placeholder="Ej: Familia González"></div>
+    <div class="form-group"><span class="lbl">Email</span><input type="email" id="mo-fam-email" placeholder="familia@gmail.com"></div>
     <span class="lbl">Hijos</span>
     <div style="display:flex;gap:6px;margin-top:4px;margin-bottom:8px;flex-wrap:wrap">
       <input type="text" id="kid-name" placeholder="Nombre" style="flex:2;min-width:100px;width:auto">
@@ -330,9 +327,7 @@ input::placeholder{color:var(--muted)}
     <div class="mo-handle"></div>
     <h3 style="margin-bottom:14px">Comprobante</h3>
     <img id="mo-img-src" style="max-width:100%;border-radius:10px;max-height:55vh;object-fit:contain">
-    <div style="margin-top:16px">
-      <button class="btn-primary" onclick="document.getElementById('mo-img').style.display='none'">Cerrar</button>
-    </div>
+    <div style="margin-top:16px"><button class="btn-primary" onclick="document.getElementById('mo-img').style.display='none'">Cerrar</button></div>
   </div>
 </div>
 
@@ -349,30 +344,26 @@ const firebaseConfig = {
   messagingSenderId: "703002714132",
   appId: "1:703002714132:web:295ac8b787696ec9e1c701"
 };
-const EJS_PUBLIC        = "UOfV2W5iOKxiX6CgE";
-const EJS_SERVICE       = "service_nm5mn5d";
-const EJS_TMPL_MONTHLY  = "template_2420g7d";
-const EJS_TMPL_REMINDER = "template_pbm0aug";
-
+const EJS_PUBLIC="UOfV2W5iOKxiX6CgE", EJS_SERVICE="service_nm5mn5d";
+const EJS_TMPL_MONTHLY="template_2420g7d", EJS_TMPL_REMINDER="template_pbm0aug";
 emailjs.init(EJS_PUBLIC);
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
-const DOC = doc(db, "app", "data");
 
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const DOC=doc(db,"app","data");
 const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-let S=null, adminOk=false, payCtx=null, tmpFile=null, editFamIdx=null, tmpKids=[];
+let S=null,adminOk=false,payCtx=null,tmpFile=null,editFamIdx=null,tmpKids=[];
 
 // ── Dark mode ─────────────────────────────────────────────────────────────
 function initTheme(){
   const saved=localStorage.getItem('theme');
-  const prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const dark=saved?saved==='dark':prefersDark;
-  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  const dark=saved?saved==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
   document.getElementById('toggle-icon').textContent=dark?'☀️':'🌙';
 }
-window.toggleDark = function(){
-  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  const next=isDark?'light':'dark';
+window.toggleDark=function(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  const next=dark?'light':'dark';
   document.documentElement.setAttribute('data-theme',next);
   localStorage.setItem('theme',next);
   document.getElementById('toggle-icon').textContent=next==='dark'?'☀️':'🌙';
@@ -397,7 +388,6 @@ async function save(){try{await setDoc(DOC,S);}catch(e){alert('Error al guardar.
 // ── Helpers ───────────────────────────────────────────────────────────────
 function mk(y,m){return`${y}-${m}`;}
 function mlbl(k){const[y,m]=k.split('-');return`${MN[+m]} ${y}`;}
-function famHasBday(fam,mi){return(fam.kids||[]).some(k=>+k.month===+mi);}
 function getMontoPerKid(k){return S.montos[k]||10000;}
 function bdayKidsThisMonth(mi){
   const kids=[];
@@ -420,6 +410,21 @@ function status(fn,k,due){
 function fmtARS(n){return Math.round(n).toLocaleString('es-AR');}
 function esc(s){return s.replace(/'/g,"\\'");}
 
+// Returns: 'current' | 'prev' | 'old'
+function monthAge(k){
+  const now=new Date();
+  const curKey=mk(now.getFullYear(),now.getMonth());
+  const prevDate=new Date(now.getFullYear(),now.getMonth()-1,1);
+  const prevKey=mk(prevDate.getFullYear(),prevDate.getMonth());
+  if(k===curKey)return'current';
+  if(k===prevKey)return'prev';
+  // future months
+  const[y,m]=k.split('-');
+  const kDate=new Date(+y,+m,1);
+  if(kDate>new Date(now.getFullYear(),now.getMonth(),1))return'current';
+  return'old';
+}
+
 function fillSelects(){
   const now=new Date(),y=now.getFullYear(),cm=now.getMonth();
   ['sel-month','adm-month','adm-pagos-month','email-month','remind-month'].forEach(id=>{
@@ -438,8 +443,8 @@ function fillSelects(){
 function renderPagos(){
   const k=document.getElementById('sel-month').value;
   const[y,m]=k.split('-'),mi=+m;
-  document.getElementById('hdr-sub').textContent=`${MN[mi]} ${y}`;
   const mpk=getMontoPerKid(k),bdays=bdayKidsThisMonth(mi);
+  const age=monthAge(k);
   let rec=0,tot=0,nOk=0;
   (S.families||[]).forEach(f=>{
     const due=effectiveDue(f,mi,mpk);
@@ -470,15 +475,41 @@ function renderPagos(){
     const ownBdays=(f.kids||[]).filter(ki=>+ki.month===mi);
     const payFor=Math.max(0,bdays.length-ownBdays.length);
     let badge='',action='',subtext='';
-    if(st==='no-due'){badge=`<span class="badge b-free">🎂 No paga</span>`;subtext=`Cumple: ${ownBdays.map(k=>k.name).join(', ')}`;}
-    else{
+
+    if(st==='no-due'){
+      badge=`<span class="badge b-free">🎂 No paga</span>`;
+      subtext=`Cumple: ${ownBdays.map(k=>k.name).join(', ')}`;
+    } else if(age==='old'){
+      // 2+ months ago — read only
+      const didPay=st==='verified'||st==='declared'||st==='partial';
+      badge=didPay
+        ?`<span class="badge b-ok">✓ Pagó</span>`
+        :`<span class="badge b-old">No pagó</span>`;
+      subtext=`$${fmtARS(p)} de $${fmtARS(due)}`;
+    } else {
       subtext=`$${fmtARS(p)} de $${fmtARS(due)}`;
       if(ownBdays.length>0)subtext+=` · paga por ${payFor} cumple${payFor>1?'s':''}`;
-      if(st==='verified'){badge=`<span class="badge b-ok">✓ Verificado</span>`;action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;}
-      else if(st==='declared'){badge=`<span class="badge b-dec">📋 Declarado</span>`;action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;}
-      else if(st==='partial'){badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar resto</button>`;}
-      else{badge=`<span class="badge b-pend">Pendiente</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;}
+      if(st==='verified'){
+        badge=`<span class="badge b-ok">✓ Verificado</span>`;
+        action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;
+      } else if(st==='declared'){
+        badge=`<span class="badge b-dec">📋 Declarado</span>`;
+        action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;
+      } else if(st==='partial'){
+        badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;
+        action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar resto</button>`;
+      } else {
+        // pending
+        if(age==='prev'){
+          badge=`<span class="badge b-late">⚠️ Atrasado</span>`;
+          action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;
+        } else {
+          badge=`<span class="badge b-pend">Pendiente</span>`;
+          action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;
+        }
+      }
     }
+
     const div=document.createElement('div');div.className='fam-card';
     div.innerHTML=`
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:${due>0?8:10}px">
@@ -539,15 +570,26 @@ window.showImg=function(fam,pi,k){
   document.getElementById('mo-img').style.display='flex';
 };
 
-// ── Notif modal ───────────────────────────────────────────────────────────
+// ── Collapsible families ──────────────────────────────────────────────────
+let famOpen=false;
+window.toggleFamilies=function(){
+  famOpen=!famOpen;
+  const body=document.getElementById('fam-body');
+  const arrow=document.getElementById('fam-arrow');
+  body.style.maxHeight=famOpen?body.scrollHeight+500+'px':'0';
+  arrow.classList.toggle('open',famOpen);
+};
+
+// ── Modals ────────────────────────────────────────────────────────────────
 window.openMoNotif=function(){document.getElementById('mo-notif').style.display='flex';};
 window.closeMoNotif=function(){document.getElementById('mo-notif').style.display='none';};
+window.openMoPin=function(){document.getElementById('new-pin').value='';document.getElementById('pin-alert').innerHTML='';document.getElementById('mo-pin').style.display='flex';};
+window.closeMoPin=function(){document.getElementById('mo-pin').style.display='none';};
 
 // ── Emails ────────────────────────────────────────────────────────────────
 window.sendMonthlyEmails=async function(){
   const k=document.getElementById('email-month').value;
-  const[y,m]=k.split('-'),mi=+m;
-  const mpk=getMontoPerKid(k),bdays=bdayKidsThisMonth(mi);
+  const[y,m]=k.split('-'),mi=+m,mpk=getMontoPerKid(k),bdays=bdayKidsThisMonth(mi);
   const alertEl=document.getElementById('monthly-alert'),btn=document.getElementById('btn-monthly');
   if(!bdays.length){alertEl.innerHTML=`<div class="alert a-err">No hay cumpleaños en este mes.</div>`;return;}
   const families=(S.families||[]).filter(f=>f.email);
@@ -559,21 +601,14 @@ window.sendMonthlyEmails=async function(){
     const ownBdays=(f.kids||[]).filter(ki=>+ki.month===mi);
     const bdayKidsList=bdays.map(b=>`${b.kid}${b.day?` (${b.day}/${mi+1})`:''}`).join(', ');
     let exemptMsg='';
-    if(due===0){
-      exemptMsg=`🎂 Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} cumple este mes, no tenés que transferir nada. ¡Feliz cumpleaños!`;
-    } else if(ownBdays.length>0){
-      const pf=bdays.length-ownBdays.length;
-      exemptMsg=`(Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} también cumple, pagás solo por ${pf} cumple${pf>1?'s':''} ajenos.)`;
-    }
+    if(due===0){exemptMsg=`🎂 Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} cumple este mes, no tenés que transferir nada. ¡Feliz cumpleaños!`;}
+    else if(ownBdays.length>0){const pf=bdays.length-ownBdays.length;exemptMsg=`(Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} también cumple, pagás solo por ${pf} cumple${pf>1?'s':''} ajenos.)`;}
     try{
       await emailjs.send(EJS_SERVICE,EJS_TMPL_MONTHLY,{
-        to_email:f.email, family_name:f.name,
-        month_name:MN[mi], birthday_count:String(bdays.length),
-        birthday_kids:bdayKidsList,
-        amount:due===0?'0':fmtARS(due),
-        exempt_message:exemptMsg
-      });
-      sent++;
+        to_email:f.email,family_name:f.name,month_name:MN[mi],
+        birthday_count:String(bdays.length),birthday_kids:bdayKidsList,
+        amount:due===0?'0':fmtARS(due),exempt_message:exemptMsg
+      });sent++;
     }catch(e){errors++;console.error(e);}
   }
   btn.disabled=false;btn.textContent='📨 Enviar mails de inicio de mes';
@@ -582,19 +617,15 @@ window.sendMonthlyEmails=async function(){
   if(!S.emailLog)S.emailLog={};
   S.emailLog[`monthly_${k}`]=Date.now();await save();
 };
-
 window.sendReminderEmails=async function(){
   const k=document.getElementById('remind-month').value;
-  const[y,m]=k.split('-'),mi=+m;
-  const mpk=getMontoPerKid(k),bdays=bdayKidsThisMonth(mi);
+  const[y,m]=k.split('-'),mi=+m,mpk=getMontoPerKid(k),bdays=bdayKidsThisMonth(mi);
   const alertEl=document.getElementById('remind-alert'),btn=document.getElementById('btn-remind');
   if(!bdays.length){alertEl.innerHTML=`<div class="alert a-err">No hay cumpleaños en este mes.</div>`;return;}
   const pending=(S.families||[]).filter(f=>{
     if(!f.email)return false;
-    const due=effectiveDue(f,mi,mpk);
-    if(due===0)return false;
-    const st=status(f.name,k,due);
-    return st==='pending'||st==='partial';
+    const due=effectiveDue(f,mi,mpk);if(due===0)return false;
+    const st=status(f.name,k,due);return st==='pending'||st==='partial';
   });
   if(!pending.length){alertEl.innerHTML=`<div class="alert a-ok">✓ Todas las familias ya pagaron.</div>`;return;}
   btn.disabled=true;btn.textContent='Enviando...';
@@ -605,11 +636,10 @@ window.sendReminderEmails=async function(){
       const dateStr=bday.day?`el ${bday.day} de ${MN[mi]}`:`en ${MN[mi]}`;
       try{
         await emailjs.send(EJS_SERVICE,EJS_TMPL_REMINDER,{
-          to_email:f.email, family_name:f.name,
+          to_email:f.email,family_name:f.name,
           birthday_kid:`${bday.kid} (${bday.fam}) — cumple ${dateStr}`,
           amount:fmtARS(paid>0?rest:due)
-        });
-        sent++;
+        });sent++;
       }catch(e){errors++;console.error(e);}
     }
   }
@@ -617,10 +647,8 @@ window.sendReminderEmails=async function(){
   alertEl.innerHTML=`<div class="alert ${errors&&!sent?'a-err':'a-ok'}">${sent} recordatorios enviados${errors?`, ${errors} con error`:''}.</div>`;
   setTimeout(()=>alertEl.innerHTML='',5000);
 };
-
 function checkAutoEmails(){
-  const now=new Date();
-  if(now.getDate()!==1)return;
+  const now=new Date();if(now.getDate()!==1)return;
   const k=mk(now.getFullYear(),now.getMonth());
   if(S.emailLog?.[`monthly_${k}`])return;
   document.getElementById('email-month').value=k;
@@ -668,6 +696,14 @@ window.saveMontoCfg=async function(){
   await save();
   document.getElementById('monto-alert').innerHTML=`<div class="alert a-ok">✓ Monto guardado</div>`;
   setTimeout(()=>document.getElementById('monto-alert').innerHTML='',2500);
+};
+window.changePin=async function(){
+  const v=document.getElementById('new-pin').value;
+  const el=document.getElementById('pin-alert');
+  if(!/^\d{4}$/.test(v)){el.innerHTML='<div class="alert a-err">El PIN debe ser de 4 dígitos</div>';return;}
+  S.pin=v;await save();
+  el.innerHTML='<div class="alert a-ok">✓ PIN actualizado</div>';
+  setTimeout(()=>{el.innerHTML='';closeMoPin();},1500);
 };
 window.openAddFam=function(){
   editFamIdx=null;tmpKids=[];
@@ -727,16 +763,19 @@ window.saveFam=async function(){
     S.families.push(fam);
   }else{
     const oldName=S.families[editFamIdx].name;
-    if(oldName!==name&&S.pagos){
-      Object.keys(S.pagos).forEach(k=>{if(S.pagos[k][oldName]){S.pagos[k][name]=S.pagos[k][oldName];delete S.pagos[k][oldName];}});
-    }
+    if(oldName!==name&&S.pagos){Object.keys(S.pagos).forEach(k=>{if(S.pagos[k][oldName]){S.pagos[k][name]=S.pagos[k][oldName];delete S.pagos[k][oldName];}});}
     S.families[editFamIdx]=fam;
   }
   await save();closeMoFam();renderAdmFams();
+  // update collapse height
+  const body=document.getElementById('fam-body');
+  if(famOpen)body.style.maxHeight=body.scrollHeight+500+'px';
 };
 function renderAdmFams(){
   const el=document.getElementById('adm-fam-list');el.innerHTML='';
-  if(!(S.families||[]).length){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
+  const count=(S.families||[]).length;
+  document.getElementById('fam-count').textContent=count?`(${count})`:'';
+  if(!count){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
   S.families.forEach((f,i)=>{
     const div=document.createElement('div');div.className='fam-card';
     const ks=f.kids&&f.kids.length?f.kids.map(k=>`${k.name} (${k.day?k.day+' de ':''}${MN[k.month]})`).join(', '):'Sin hijos';
@@ -792,14 +831,6 @@ window.rmPago=async function(fam,pi,k){
   S.pagos[k][fam].splice(pi,1);
   if(!S.pagos[k][fam].length)delete S.pagos[k][fam];
   await save();renderAdmPagos();
-};
-window.changePin=async function(){
-  const v=document.getElementById('new-pin').value;
-  const el=document.getElementById('pin-alert');
-  if(!/^\d{4}$/.test(v)){el.innerHTML='<div class="alert a-err">El PIN debe ser de 4 dígitos</div>';return;}
-  S.pin=v;await save();document.getElementById('new-pin').value='';
-  el.innerHTML='<div class="alert a-ok">✓ PIN actualizado</div>';
-  setTimeout(()=>el.innerHTML='',2500);
 };
 
 document.getElementById('adm-pagos-month').addEventListener('change',renderAdmPagos);

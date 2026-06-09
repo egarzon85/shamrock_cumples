@@ -61,7 +61,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .toggle-icon{font-size:13px;margin-right:3px}
 .pg{display:none;padding:14px 14px 40px;max-width:480px;margin:0 auto}
 .pg.on{display:block}
-.btn-pay{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:44px;transition:background .2s}
+.btn-pay{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:36px;transition:background .2s}
 .btn-pay:active{opacity:.85}
 .btn-add-pay{background:var(--email-bg);color:var(--accent);border:2px solid var(--accent);border-radius:10px;padding:9px 16px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:44px;transition:all .2s}
 .btn-add-pay:active{opacity:.85}
@@ -136,11 +136,17 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .collapse-body{overflow:hidden;transition:max-height .3s ease}
 .field-hint{font-size:11px;color:var(--danger);margin-top:4px;display:none}
 .field-hint.show{display:block}
-.rec-banner{background:var(--ok-bg);border:1.5px solid var(--ok-bd);border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.rec-banner-icon{font-size:20px;flex-shrink:0}
-.rec-banner-text{font-size:13px;color:var(--ok);font-weight:600}
-.rec-banner-alias{font-size:15px;color:var(--ok);font-weight:800;margin-top:2px}
-.email-history{margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+.rec-banner{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.rec-banner-icon{font-size:16px;flex-shrink:0}
+.rec-banner-text{font-size:12px;color:var(--muted);font-weight:500}
+.rec-banner-alias{font-size:16px;color:var(--accent);font-weight:800;margin-top:1px;cursor:pointer}
+.transfer-box{background:var(--email-bg);border:1.5px solid var(--email-bd);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.transfer-box-title{font-size:11px;font-weight:700;color:var(--email-title);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.transfer-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.transfer-row:last-child{border-bottom:none}
+.transfer-done{opacity:.5;text-decoration:line-through}
+.btn-transfer{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-family:'DM Sans',system-ui,sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.btn-transfer.done{background:var(--ok);}
 .email-history-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .email-history-header:active{opacity:.7}
 .email-history-title{font-size:12px;color:var(--muted);font-weight:600}
@@ -475,18 +481,23 @@ function fillSelects(){
     }
   });
 }
-window.copyAlias=function(alias){
-  navigator.clipboard.writeText(alias).then(()=>{
-    const el=document.getElementById('copy-feedback');
+window.copyAlias=function(alias,feedbackId){
+  const showFeedback=()=>{
+    const el=feedbackId?document.getElementById(feedbackId):document.getElementById('copy-feedback');
     if(el){el.textContent='✓ ¡Copiado!';setTimeout(()=>el.textContent='',2000);}
-  }).catch(()=>{
-    // Fallback for older browsers
-    const ta=document.createElement('textarea');
-    ta.value=alias;document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-    const el=document.getElementById('copy-feedback');
-    if(el){el.textContent='✓ ¡Copiado!';setTimeout(()=>el.textContent='',2000);}
-  });
+  };
+  try{
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(alias).then(showFeedback);
+    } else {
+      const inp=document.createElement('input');
+      inp.style.position='fixed';inp.style.opacity='0';
+      inp.value=alias;document.body.appendChild(inp);
+      inp.focus();inp.select();inp.setSelectionRange(0,999);
+      document.execCommand('copy');document.body.removeChild(inp);
+      showFeedback();
+    }
+  }catch(e){showFeedback();}
 };
 window.toggleRec=async function(name){
   if(S.recaudador===name) S.recaudador='';
@@ -524,7 +535,7 @@ function renderPagos(){
     recBanner.innerHTML=`<div class="rec-banner">
       <div class="rec-banner-icon">💳</div>
       <div>
-        <div class="rec-banner-text">Transferencias a: ${recFam.name}</div>
+        <div class="rec-banner-text">Transferí a: ${recFam.name}</div>
         ${recFam.alias
           ?`<div class="rec-banner-alias" onclick="copyAlias('${esc(recFam.alias)}')" style="cursor:pointer">${recFam.alias}</div>`
           :'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}
@@ -934,6 +945,37 @@ function renderAdmPagos(){
   const[y,m]=k.split('-'),mi=+m,mpk=getMontoPerKid(k);
   const el=document.getElementById('adm-pagos-list');el.innerHTML='';
   if(!(S.families||[]).length){el.innerHTML='<div class="empty">Sin familias</div>';return;}
+
+  // ── Transfer box ──────────────────────────────────────────────────────
+  const bdaysThisMonth=bdayKidsThisMonth(mi);
+  if(bdaysThisMonth.length>0){
+    const totalFamilies=(S.families||[]).length;
+    // Total recaudado: sum of what each family paid
+    let totalRec=0;
+    (S.families||[]).forEach(f=>totalRec+=paidAmt(f.name,k));
+    const amountPerBday=bdaysThisMonth.length>0?Math.round(totalRec/bdaysThisMonth.length):0;
+    if(!S.transfers)S.transfers={};
+    if(!S.transfers[k])S.transfers[k]={};
+    let boxHtml=`<div class="transfer-box"><div class="transfer-box-title">💸 Transferencias a realizar</div>`;
+    bdaysThisMonth.forEach(b=>{
+      const famObj=(S.families||[]).find(f=>f.name===b.fam);
+      const done=S.transfers[k][b.fam]===true;
+      const aliasStr=famObj&&famObj.alias?famObj.alias:'Sin alias';
+      boxHtml+=`<div class="transfer-row ${done?'transfer-done':''}">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text)">${b.fam}</div>
+          <div style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer" onclick="copyAlias('${esc(aliasStr)}')" id="tf-alias-${esc(b.fam)}">${aliasStr}</div>
+          <div style="font-size:12px;color:var(--muted)">$${fmtARS(amountPerBday)}</div>
+          <div id="tf-copy-${esc(b.fam)}" style="font-size:11px;color:var(--ok);font-weight:600;height:14px"></div>
+        </div>
+        <button class="btn-transfer ${done?'done':''}" onclick="toggleTransfer('${esc(b.fam)}','${k}')">${done?'✓ Hecho':'Transferir'}</button>
+      </div>`;
+    });
+    boxHtml+='</div>';
+    el.innerHTML=boxHtml;
+  }
+
+  // ── Family payment list ───────────────────────────────────────────────
   const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
   sorted.forEach(f=>{
     const due=effectiveDue(f,mi,mpk),ps=getPagos(f.name,k),p=paidAmt(f.name,k);
@@ -945,25 +987,47 @@ function renderAdmPagos(){
     else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
     const div=document.createElement('div');div.className='fam-card';
     const ownBdaysAdmin=(f.kids||[]).filter(ki=>+ki.month===+mi);
-    const aliasRow=ownBdaysAdmin.length>0&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🏦 ${f.alias}</div>`:'';
+    const aliasRow=ownBdaysAdmin.length>0&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600;cursor:pointer" onclick="copyAlias('${esc(f.alias)}')">🏦 ${f.alias}</div>`:'';
     const bdayRow=ownBdaysAdmin.length>0?`<div style="font-size:12px;color:var(--ok);margin-top:3px">🎂 Cumple: ${ownBdaysAdmin.map(ki=>ki.name+(ki.day?` (${ki.day}/${+mi+1})`:'')).join(', ')}</div>`:'';
-    let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${ps.length?10:0}px">
+    const famId=f.name.replace(/\s/g,'_');
+    let html=`<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="togglePagosDetail('${famId}')">
       <div><div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
       <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${bdayRow}${aliasRow}</div>
-      <span class="badge ${bc}">${bl}</span></div>`;
-    ps.forEach((p2,pi)=>{
-      const dt=new Date(p2.ts),ds=`${dt.getDate()}/${dt.getMonth()+1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
-      html+=`<div class="pago-item">
-        <div><div style="font-size:14px;font-weight:600;color:var(--text)">$${fmtARS(p2.monto)}</div>
-        <div style="font-size:11px;color:var(--muted)">${ds} · ${p2.comp?'<span style="color:var(--ok);font-weight:600">Con comprobante ✓</span>':'Sin comprobante'}</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          ${p2.comp?`<span class="img-link" onclick="showImg('${esc(f.name)}',${pi},'${k}')">Ver</span>`:''}
-          <button class="btn-danger-sm" style="padding:5px 10px;min-height:32px;font-size:12px" onclick="rmPago('${esc(f.name)}',${pi},'${k}')">✕</button>
-        </div></div>`;
-    });
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge ${bc}">${bl}</span>
+        ${ps.length?`<span style="font-size:12px;color:var(--muted)">▼</span>`:''}
+      </div>
+    </div>`;
+    if(ps.length){
+      html+=`<div id="pagos-detail-${famId}" style="max-height:0;overflow:hidden;transition:max-height .3s ease">
+        <div style="padding-top:8px">`;
+      ps.forEach((p2,pi)=>{
+        const dt=new Date(p2.ts),ds=`${dt.getDate()}/${dt.getMonth()+1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
+        html+=`<div class="pago-item">
+          <div><div style="font-size:14px;font-weight:600;color:var(--text)">$${fmtARS(p2.monto)}</div>
+          <div style="font-size:11px;color:var(--muted)">${ds} · ${p2.comp?'<span style="color:var(--ok);font-weight:600">Con comprobante ✓</span>':'Sin comprobante'}</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            ${p2.comp?`<span class="img-link" onclick="event.stopPropagation();showImg('${esc(f.name)}',${pi},'${k}')">Ver</span>`:''}
+            <button class="btn-danger-sm" style="padding:5px 10px;min-height:32px;font-size:12px" onclick="event.stopPropagation();rmPago('${esc(f.name)}',${pi},'${k}')">✕</button>
+          </div></div>`;
+      });
+      html+=`</div></div>`;
+    }
     div.innerHTML=html;el.appendChild(div);
   });
 }
+window.toggleTransfer=async function(fam,k){
+  if(!S.transfers)S.transfers={};
+  if(!S.transfers[k])S.transfers[k]={};
+  S.transfers[k][fam]=!S.transfers[k][fam];
+  await save();renderAdmPagos();
+};
+window.togglePagosDetail=function(famId){
+  const el=document.getElementById(`pagos-detail-${famId}`);
+  if(!el)return;
+  const isOpen=el.style.maxHeight!=='0px'&&el.style.maxHeight!=='';
+  el.style.maxHeight=isOpen?'0':el.scrollHeight+100+'px';
+};
 window.renderAdmPagos=renderAdmPagos;
 window.rmPago=async function(fam,pi,k){
   S.pagos[k][fam].splice(pi,1);

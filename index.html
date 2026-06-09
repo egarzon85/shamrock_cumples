@@ -823,9 +823,9 @@ function renderAdmPagos(){
     else if(st==='declared'){bc='b-dec';bl='📋 Declarado';}
     else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
     const div=document.createElement('div');div.className='fam-card';
-    const aliasRow=f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🏦 ${f.alias}</div>`:'';
-    const ownBdaysAdmin=(f.kids||[]).filter(ki=>+ki.month===mi);
-    const bdayRow=ownBdaysAdmin.length>0?`<div style="font-size:12px;color:var(--ok);margin-top:3px">🎂 Cumple: ${ownBdaysAdmin.map(k=>k.name+(k.day?` (${k.day}/${mi+1})`:'') ).join(', ')}</div>`:'';
+    const ownBdaysAdmin=(f.kids||[]).filter(ki=>+ki.month===+mi);
+    const aliasRow=ownBdaysAdmin.length>0&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🏦 ${f.alias}</div>`:'';
+    const bdayRow=ownBdaysAdmin.length>0?`<div style="font-size:12px;color:var(--ok);margin-top:3px">🎂 Cumple: ${ownBdaysAdmin.map(ki=>ki.name+(ki.day?` (${ki.day}/${+mi+1})`:'')).join(', ')}</div>`:'';
     let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${ps.length?10:0}px">
       <div><div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
       <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${bdayRow}${aliasRow}</div>

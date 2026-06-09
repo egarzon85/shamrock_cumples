@@ -136,6 +136,19 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .collapse-body{overflow:hidden;transition:max-height .3s ease}
 .field-hint{font-size:11px;color:var(--danger);margin-top:4px;display:none}
 .field-hint.show{display:block}
+.rec-banner{background:var(--ok-bg);border:1.5px solid var(--ok-bd);border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.rec-banner-icon{font-size:20px;flex-shrink:0}
+.rec-banner-text{font-size:13px;color:var(--ok);font-weight:600}
+.rec-banner-alias{font-size:15px;color:var(--ok);font-weight:800;margin-top:2px}
+.email-history{margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+.email-history-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.email-history-header:active{opacity:.7}
+.email-history-title{font-size:12px;color:var(--muted);font-weight:600}
+.email-history-arrow{font-size:11px;color:var(--muted);transition:transform .2s}
+.email-history-arrow.open{transform:rotate(180deg)}
+.email-history-body{overflow:hidden;transition:max-height .3s ease}
+.email-history-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.email-history-row:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -155,6 +168,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
   <div id="loading-pagos" class="loading">Cargando datos...</div>
   <div id="pagos-content" style="display:none">
     <div class="month-bar"><select id="sel-month" onchange="renderPagos()"></select></div>
+    <div id="rec-banner"></div>
     <div class="stats" id="stats"></div>
     <div class="prog"><div class="prog-f" id="prog-f" style="width:0%"></div></div>
     <div id="bday-row" style="margin-bottom:14px"></div>
@@ -204,6 +218,15 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
     </div>
 
     <div class="divider"></div>
+    <div class="sec-title">Familia recaudadora del mes</div>
+    <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px">
+      <div style="flex:1"><span class="lbl">Mes</span><select id="rec-month" onchange="loadRecCfg()"></select></div>
+      <div style="flex:1"><span class="lbl">Familia</span><select id="rec-fam"></select></div>
+    </div>
+    <button class="btn-primary" onclick="saveRecCfg()" style="margin-bottom:6px">Guardar recaudadora</button>
+    <div id="rec-alert"></div>
+
+    <div class="divider"></div>
     <button class="btn-notif" onclick="openMoNotif()" style="margin-bottom:10px">✉️ Notificaciones por mail</button>
 
     <div class="divider"></div>
@@ -228,6 +251,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
       <div class="form-group"><span class="lbl">Mes</span><select id="email-month"></select></div>
       <button class="btn-primary" id="btn-monthly" onclick="sendMonthlyEmails()">📨 Enviar mails de inicio de mes</button>
       <div id="monthly-alert"></div>
+      <div id="monthly-history"></div>
     </div>
     <div class="email-section warn">
       <div class="email-section-title">⏰ Recordatorio a morosos</div>
@@ -235,6 +259,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
       <div class="form-group"><span class="lbl">Mes</span><select id="remind-month"></select></div>
       <button class="btn-warning" id="btn-remind" onclick="sendReminderEmails()">⏰ Enviar recordatorios</button>
       <div id="remind-alert"></div>
+      <div id="remind-history"></div>
     </div>
     <div style="margin-top:16px"><button class="btn-cancel" style="width:100%" onclick="closeMoNotif()">Cerrar</button></div>
   </div>
@@ -445,7 +470,7 @@ window.validateDay=function(){
 // ── Fill selects with birthday count ─────────────────────────────────────
 function fillSelects(){
   const now=new Date(),y=now.getFullYear(),cm=now.getMonth();
-  ['sel-month','adm-month','adm-pagos-month','email-month','remind-month'].forEach(id=>{
+  ['sel-month','adm-month','adm-pagos-month','email-month','remind-month','rec-month'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     el.innerHTML='';
     for(let m=0;m<12;m++){
@@ -458,7 +483,35 @@ function fillSelects(){
       el.appendChild(o);
     }
   });
+  fillRecFam();
 }
+function fillRecFam(){
+  const el=document.getElementById('rec-fam');if(!el)return;
+  el.innerHTML='<option value="">— Sin recaudadora —</option>';
+  const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  sorted.forEach(f=>{
+    const o=document.createElement('option');
+    o.value=f.name;o.text=f.name+(f.alias?` (${f.alias})`:'');
+    el.appendChild(o);
+  });
+}
+function loadRecCfg(){
+  const k=document.getElementById('rec-month').value;
+  const rec=(S.recaudadores||{})[k]||'';
+  document.getElementById('rec-fam').value=rec;
+}
+window.loadRecCfg=loadRecCfg;
+window.saveRecCfg=async function(){
+  const k=document.getElementById('rec-month').value;
+  const fam=document.getElementById('rec-fam').value;
+  if(!S.recaudadores)S.recaudadores={};
+  if(fam)S.recaudadores[k]=fam;
+  else delete S.recaudadores[k];
+  await save();
+  document.getElementById('rec-alert').innerHTML=`<div class="alert a-ok">✓ Guardado</div>`;
+  setTimeout(()=>document.getElementById('rec-alert').innerHTML='',2500);
+  renderPagos();
+};
 
 // ── Render pagos ──────────────────────────────────────────────────────────
 function renderPagos(){
@@ -480,6 +533,21 @@ function renderPagos(){
     <div class="stat"><div class="v v-acc">${nOk}/${payingCount}</div><div class="l">Pagaron</div></div>`;
   document.getElementById('prog-f').style.width=pct+'%';
   const br=document.getElementById('bday-row');br.innerHTML='';
+  // Recaudador banner
+  const recName=(S.recaudadores||{})[k];
+  const recFam=recName?(S.families||[]).find(f=>f.name===recName):null;
+  const recBanner=document.getElementById('rec-banner');
+  if(recFam){
+    recBanner.innerHTML=`<div class="rec-banner">
+      <div class="rec-banner-icon">💳</div>
+      <div>
+        <div class="rec-banner-text">Transferí a: ${recFam.name}</div>
+        ${recFam.alias?`<div class="rec-banner-alias">${recFam.alias}</div>`:'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}
+      </div>
+    </div>`;
+  } else {
+    recBanner.innerHTML='';
+  }
   if(bdays.length>0){
     bdays.forEach(b=>br.innerHTML+=`<span class="bday-chip">🎂 ${b.kid}${b.day?` (${b.day}/${mi+1})`:''} <span style="font-weight:400;font-size:11px">${b.fam}</span></span>`);
     const base=bdays.length*mpk;
@@ -510,8 +578,8 @@ function renderPagos(){
     } else {
       subtext=`$${fmtARS(p)} de $${fmtARS(due)}`;
       if(ownBdays.length>0)subtext+=` · paga por ${payFor} cumple${payFor>1?'s':''}`;
-      if(st==='verified'){badge=`<span class="badge b-ok">✓ Verificado</span>`;action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;}
-      else if(st==='declared'){badge=`<span class="badge b-dec">📋 Declarado</span>`;action=`<button class="btn-add-pay" onclick="openPay('${esc(f.name)}','${k}')">+ Agregar pago</button>`;}
+      if(st==='verified'){badge=`<span class="badge b-ok">✓ Verificado</span>`;action='';}
+      else if(st==='declared'){badge=`<span class="badge b-dec">📋 Declarado</span>`;action='';}
       else if(st==='partial'){badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar resto</button>`;}
       else if(age==='prev'){badge=`<span class="badge b-late">⚠️ Atrasado</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;}
       else{badge=`<span class="badge b-pend">Pendiente</span>`;action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`;}
@@ -541,7 +609,9 @@ window.openPay=function(fam,k){
   document.getElementById('mo-body').textContent=`${mlbl(k)} · Total: $${fmtARS(due)}`;
   const ri=document.getElementById('mo-rest');
   if(rest>0){ri.style.display='flex';ri.textContent=`Falta: $${fmtARS(rest)}`;}else ri.style.display='none';
-  document.getElementById('mo-monto').value=rest>0?rest:'';
+  const montoInput=document.getElementById('mo-monto');
+  montoInput.value=rest>0?rest:'';
+  montoInput.max=rest;
   document.getElementById('upload-lbl').innerHTML='📎 Tocar para adjuntar comprobante';
   document.getElementById('upload-prev').style.display='none';
   document.getElementById('mo-file').value='';
@@ -561,8 +631,13 @@ window.handleFile=function(e){
 window.confirmPay=async function(){
   if(!payCtx)return;
   const{fam,k}=payCtx;
+  const[y,m]=k.split('-'),mi=+m;
+  const famObj=(S.families||[]).find(f=>f.name===fam);
+  const due=effectiveDue(famObj,mi,getMontoPerKid(k));
+  const paid=paidAmt(fam,k),rest=Math.max(0,due-paid);
   const monto=parseInt(document.getElementById('mo-monto').value)||0;
   if(monto<=0){alert('Ingresá un monto válido');return;}
+  if(monto>rest){alert(`El monto máximo es $${fmtARS(rest)}`);return;}
   if(!S.pagos)S.pagos={};
   if(!S.pagos[k])S.pagos[k]={};
   if(!S.pagos[k][fam])S.pagos[k][fam]=[];
@@ -587,8 +662,46 @@ window.toggleFamilies=function(){
 };
 
 // ── Modals ────────────────────────────────────────────────────────────────
-window.openMoNotif=function(){document.getElementById('mo-notif').style.display='flex';};
+window.openMoNotif=function(){
+  document.getElementById('mo-notif').style.display='flex';
+  const k=document.getElementById('email-month').value;
+  const kr=document.getElementById('remind-month').value;
+  renderEmailHistory('monthly',k);
+  renderEmailHistory('reminder',kr);
+};
 window.closeMoNotif=function(){document.getElementById('mo-notif').style.display='none';};
+
+function renderEmailHistory(type,k){
+  const log=(S.emailLog||{})[`${type}_${k}`];
+  const elId=type==='monthly'?'monthly-history':'remind-history';
+  const el=document.getElementById(elId);if(!el)return;
+  if(!log||!log.details||!log.details.length){el.innerHTML='';return;}
+  const dt=new Date(log.ts);
+  const ds=`${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}hs`;
+  const id=`hist-body-${type}`;
+  el.innerHTML=`<div class="email-history">
+    <div class="email-history-header" onclick="toggleHistory('${id}')">
+      <span class="email-history-title">Último envío: ${ds} · ${log.sent} ✓${log.errors?` · ${log.errors} ✗`:''}</span>
+      <span class="email-history-arrow" id="arr-${id}">▼</span>
+    </div>
+    <div class="email-history-body" id="${id}" style="max-height:0">
+      <div style="padding-top:8px">
+        ${log.details.map(d=>`
+          <div class="email-history-row">
+            <span style="color:var(--text)">${d.name}</span>
+            <span style="font-weight:700;color:${d.ok?'var(--ok)':'var(--danger)'}">${d.ok?'✓ Enviado':'✗ Error'}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+window.toggleHistory=function(id){
+  const body=document.getElementById(id);
+  const arrow=document.getElementById('arr-'+id);
+  const isOpen=body.style.maxHeight!=='0px'&&body.style.maxHeight!=='';
+  body.style.maxHeight=isOpen?'0':body.scrollHeight+100+'px';
+  arrow.classList.toggle('open',!isOpen);
+};
 window.openMoPin=function(){document.getElementById('new-pin').value='';document.getElementById('pin-alert').innerHTML='';document.getElementById('mo-pin').style.display='flex';};
 window.closeMoPin=function(){document.getElementById('mo-pin').style.display='none';};
 
@@ -602,6 +715,7 @@ window.sendMonthlyEmails=async function(){
   if(!families.length){alertEl.innerHTML=`<div class="alert a-err">Ninguna familia tiene mail.</div>`;return;}
   btn.disabled=true;btn.textContent='Enviando...';
   let sent=0,errors=0;
+  const histDetails=[];
   for(const f of families){
     const due=effectiveDue(f,mi,mpk);
     const ownBdays=(f.kids||[]).filter(ki=>+ki.month===mi);
@@ -609,18 +723,23 @@ window.sendMonthlyEmails=async function(){
     let exemptMsg='';
     if(due===0){exemptMsg=`🎂 Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} cumple este mes, no tenés que transferir nada. ¡Feliz cumpleaños!`;}
     else if(ownBdays.length>0){const pf=bdays.length-ownBdays.length;exemptMsg=`(Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} también cumple, pagás solo por ${pf} cumple${pf>1?'s':''} ajenos.)`;}
+    let ok=false;
     try{
       await emailjs.send(EJS_SERVICE,EJS_TMPL_MONTHLY,{
         to_email:f.email,family_name:f.name,month_name:MN[mi],
         birthday_count:String(bdays.length),birthday_kids:bdayKidsList,
         amount:due===0?'0':fmtARS(due),exempt_message:exemptMsg
-      });sent++;
+      });sent++;ok=true;
     }catch(e){errors++;console.error(e);}
+    histDetails.push({name:f.name,ok});
   }
   btn.disabled=false;btn.textContent='📨 Enviar mails de inicio de mes';
   alertEl.innerHTML=`<div class="alert ${errors&&!sent?'a-err':'a-ok'}">${sent} mails enviados${errors?`, ${errors} con error`:''}.</div>`;
   setTimeout(()=>alertEl.innerHTML='',5000);
-  if(!S.emailLog)S.emailLog={};S.emailLog[`monthly_${k}`]=Date.now();await save();
+  if(!S.emailLog)S.emailLog={};
+  S.emailLog[`monthly_${k}`]={ts:Date.now(),details:histDetails,sent,errors};
+  await save();
+  renderEmailHistory('monthly',k);
 };
 window.sendReminderEmails=async function(){
   const k=document.getElementById('remind-month').value;
@@ -635,8 +754,10 @@ window.sendReminderEmails=async function(){
   if(!pending.length){alertEl.innerHTML=`<div class="alert a-ok">✓ Todas las familias ya pagaron.</div>`;return;}
   btn.disabled=true;btn.textContent='Enviando...';
   let sent=0,errors=0;
+  const histDetails=[];
   for(const f of pending){
     const due=effectiveDue(f,mi,mpk),paid=paidAmt(f.name,k),rest=due-paid;
+    let ok=false;
     for(const bday of bdays){
       const dateStr=bday.day?`el ${bday.day} de ${MN[mi]}`:`en ${MN[mi]}`;
       try{
@@ -644,13 +765,18 @@ window.sendReminderEmails=async function(){
           to_email:f.email,family_name:f.name,
           birthday_kid:`${bday.kid} (${bday.fam}) — cumple ${dateStr}`,
           amount:fmtARS(paid>0?rest:due)
-        });sent++;
+        });sent++;ok=true;
       }catch(e){errors++;console.error(e);}
     }
+    histDetails.push({name:f.name,ok});
   }
   btn.disabled=false;btn.textContent='⏰ Enviar recordatorios';
   alertEl.innerHTML=`<div class="alert ${errors&&!sent?'a-err':'a-ok'}">${sent} recordatorios enviados${errors?`, ${errors} con error`:''}.</div>`;
   setTimeout(()=>alertEl.innerHTML='',5000);
+  if(!S.emailLog)S.emailLog={};
+  S.emailLog[`reminder_${k}`]={ts:Date.now(),details:histDetails,sent,errors};
+  await save();
+  renderEmailHistory('reminder',k);
 };
 function checkAutoEmails(){
   const now=new Date();if(now.getDate()!==1)return;
@@ -688,7 +814,7 @@ window.doLogout=function(){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById('pg-pagos').classList.add('on');
 };
-function renderAdminPanel(){loadMontoCfg();renderAdmFams();renderAdmPagos();}
+function renderAdminPanel(){loadMontoCfg();loadRecCfg();fillRecFam();renderAdmFams();renderAdmPagos();}
 function loadMontoCfg(){
   const k=document.getElementById('adm-month').value;
   document.getElementById('adm-monto').value=S.montos[k]||10000;
@@ -735,129 +861,3 @@ window.openEditFam=function(i){
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
-  document.getElementById('kid-day').classList.remove('error');
-  document.getElementById('day-hint').classList.remove('show');
-  renderKidsList();
-  document.getElementById('mo-fam').style.display='flex';
-};
-window.closeMoFam=function(){document.getElementById('mo-fam').style.display='none';editFamIdx=null;tmpKids=[];};
-window.addKid=function(){
-  const n=document.getElementById('kid-name').value.trim();
-  const d=parseInt(document.getElementById('kid-day').value)||null;
-  const m=document.getElementById('kid-month').value;
-  if(!n||m===''){alert('Completá nombre y mes');return;}
-  if(!window.validateDay()){alert('El día ingresado no es válido para ese mes');return;}
-  tmpKids.push({name:n,day:d,month:+m});
-  document.getElementById('kid-name').value='';
-  document.getElementById('kid-day').value='';
-  document.getElementById('kid-month').value='';
-  document.getElementById('kid-day').classList.remove('error');
-  document.getElementById('day-hint').classList.remove('show');
-  renderKidsList();
-};
-window.rmKid=function(i){tmpKids.splice(i,1);renderKidsList();};
-function renderKidsList(){
-  const el=document.getElementById('kids-list');el.innerHTML='';
-  if(!tmpKids.length){el.innerHTML='<div style="font-size:13px;color:var(--muted);margin-bottom:8px">Sin hijos cargados</div>';return;}
-  tmpKids.forEach((k,i)=>{
-    const d=document.createElement('div');d.className='kid-row';
-    const ds=k.day?`${k.day} de ${MN[k.month]}`:MN[k.month];
-    d.innerHTML=`<span style="font-size:14px;font-weight:500;color:var(--text)">🎂 ${k.name} — ${ds}</span><button class="btn-danger-sm" style="padding:5px 10px;min-height:30px;font-size:12px" onclick="rmKid(${i})">✕</button>`;
-    el.appendChild(d);
-  });
-}
-window.saveFam=async function(){
-  const name=document.getElementById('mo-fam-name').value.trim();
-  const email=document.getElementById('mo-fam-email').value.trim();
-  const alias=document.getElementById('mo-fam-alias').value.trim();
-  if(!name){alert('Ingresá el nombre de la familia');return;}
-  if(!S.families)S.families=[];
-  const fam={name,email:email||'',alias:alias||'',kids:JSON.parse(JSON.stringify(tmpKids))};
-  if(editFamIdx===null){
-    if(S.families.some(f=>f.name===name)){alert('Ya existe esa familia');return;}
-    S.families.push(fam);
-  }else{
-    const oldName=S.families[editFamIdx].name;
-    if(oldName!==name&&S.pagos){Object.keys(S.pagos).forEach(k=>{if(S.pagos[k][oldName]){S.pagos[k][name]=S.pagos[k][oldName];delete S.pagos[k][oldName];}});}
-    S.families[editFamIdx]=fam;
-  }
-  await save();closeMoFam();renderAdmFams();fillSelects();
-  const body=document.getElementById('fam-body');
-  if(famOpen)body.style.maxHeight=body.scrollHeight+600+'px';
-};
-function renderAdmFams(){
-  const el=document.getElementById('adm-fam-list');el.innerHTML='';
-  const count=(S.families||[]).length;
-  document.getElementById('fam-count').textContent=count?`(${count})`:'';
-  if(!count){el.innerHTML='<div class="empty">Sin familias cargadas</div>';return;}
-  // Admin list sorted alphabetically too
-  const sorted=[...(S.families||[])].map((f,i)=>({...f,_idx:i})).sort((a,b)=>a.name.localeCompare(b.name,'es'));
-  sorted.forEach(f=>{
-    const div=document.createElement('div');div.className='fam-card';
-    const ks=f.kids&&f.kids.length?f.kids.map(k=>`${k.name} (${k.day?k.day+' de ':''}${MN[k.month]})`).join(', '):'Sin hijos';
-    div.innerHTML=`
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
-        <div>
-          <div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">🎂 ${ks}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:1px">✉️ ${f.email||'Sin mail'}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:1px">🏦 ${f.alias||'Sin alias'}</div>
-        </div>
-        <div style="display:flex;gap:6px;flex-shrink:0">
-          <button class="btn-outline-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="openEditFam(${f._idx})">Editar</button>
-          <button class="btn-danger-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="rmFam(${f._idx})">✕</button>
-        </div>
-      </div>`;
-    el.appendChild(div);
-  });
-}
-window.rmFam=async function(i){S.families.splice(i,1);await save();renderAdmFams();fillSelects();};
-function renderAdmPagos(){
-  const k=document.getElementById('adm-pagos-month').value;
-  const[y,m]=k.split('-'),mi=+m,mpk=getMontoPerKid(k);
-  const el=document.getElementById('adm-pagos-list');el.innerHTML='';
-  if(!(S.families||[]).length){el.innerHTML='<div class="empty">Sin familias</div>';return;}
-  const sorted=[...(S.families||[])].sort((a,b)=>a.name.localeCompare(b.name,'es'));
-  sorted.forEach(f=>{
-    const due=effectiveDue(f,mi,mpk),ps=getPagos(f.name,k),p=paidAmt(f.name,k);
-    const st=due===0?'no-due':status(f.name,k,due);
-    let bc='b-pend',bl='Pendiente';
-    if(st==='no-due'){bc='b-free';bl='🎂 No paga';}
-    else if(st==='verified'){bc='b-ok';bl='✓ Verificado';}
-    else if(st==='declared'){bc='b-dec';bl='📋 Declarado';}
-    else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
-    const div=document.createElement('div');div.className='fam-card';
-    const ownBdaysAdmin=(f.kids||[]).filter(ki=>+ki.month===+mi);
-    const aliasRow=ownBdaysAdmin.length>0&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🏦 ${f.alias}</div>`:'';
-    const bdayRow=ownBdaysAdmin.length>0?`<div style="font-size:12px;color:var(--ok);margin-top:3px">🎂 Cumple: ${ownBdaysAdmin.map(ki=>ki.name+(ki.day?` (${ki.day}/${+mi+1})`:'')).join(', ')}</div>`:'';
-    let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${ps.length?10:0}px">
-      <div><div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
-      <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${bdayRow}${aliasRow}</div>
-      <span class="badge ${bc}">${bl}</span></div>`;
-    ps.forEach((p2,pi)=>{
-      const dt=new Date(p2.ts),ds=`${dt.getDate()}/${dt.getMonth()+1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
-      html+=`<div class="pago-item">
-        <div><div style="font-size:14px;font-weight:600;color:var(--text)">$${fmtARS(p2.monto)}</div>
-        <div style="font-size:11px;color:var(--muted)">${ds} · ${p2.comp?'<span style="color:var(--ok);font-weight:600">Con comprobante ✓</span>':'Sin comprobante'}</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          ${p2.comp?`<span class="img-link" onclick="showImg('${esc(f.name)}',${pi},'${k}')">Ver</span>`:''}
-          <button class="btn-danger-sm" style="padding:5px 10px;min-height:32px;font-size:12px" onclick="rmPago('${esc(f.name)}',${pi},'${k}')">✕</button>
-        </div></div>`;
-    });
-    div.innerHTML=html;el.appendChild(div);
-  });
-}
-window.renderAdmPagos=renderAdmPagos;
-window.rmPago=async function(fam,pi,k){
-  S.pagos[k][fam].splice(pi,1);
-  if(!S.pagos[k][fam].length)delete S.pagos[k][fam];
-  await save();renderAdmPagos();
-};
-
-document.getElementById('adm-pagos-month').addEventListener('change',renderAdmPagos);
-document.getElementById('adm-month').addEventListener('change',loadMontoCfg);
-document.getElementById('sel-month').addEventListener('change',renderPagos);
-init();
-</script>
-</body>
-</html>

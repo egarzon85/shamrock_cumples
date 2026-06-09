@@ -1,9 +1,10 @@
 const CACHE = 'velitas-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/shamrock_cumples/',
+  '/shamrock_cumples/index.html',
+  '/shamrock_cumples/icon-192.png',
+  '/shamrock_cumples/icon-512.png',
+  '/shamrock_cumples/manifest.json'
 ];
 
 self.addEventListener('install', e => {

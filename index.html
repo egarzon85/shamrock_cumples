@@ -475,7 +475,19 @@ function fillSelects(){
     }
   });
 }
-window.toggleRec=async function(name){
+window.copyAlias=function(alias){
+  navigator.clipboard.writeText(alias).then(()=>{
+    const el=document.getElementById('copy-feedback');
+    if(el){el.textContent='✓ ¡Copiado!';setTimeout(()=>el.textContent='',2000);}
+  }).catch(()=>{
+    // Fallback for older browsers
+    const ta=document.createElement('textarea');
+    ta.value=alias;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    const el=document.getElementById('copy-feedback');
+    if(el){el.textContent='✓ ¡Copiado!';setTimeout(()=>el.textContent='',2000);}
+  });
+};
   if(S.recaudador===name) S.recaudador='';
   else S.recaudador=name;
   await save();
@@ -512,7 +524,10 @@ function renderPagos(){
       <div class="rec-banner-icon">💳</div>
       <div>
         <div class="rec-banner-text">Transferí a: ${recFam.name}</div>
-        ${recFam.alias?`<div class="rec-banner-alias">${recFam.alias}</div>`:'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}
+        ${recFam.alias
+          ?`<div class="rec-banner-alias" onclick="copyAlias('${esc(recFam.alias)}')" style="cursor:pointer">${recFam.alias}</div>`
+          :'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}
+        <div id="copy-feedback" style="font-size:11px;color:var(--ok);font-weight:600;height:14px"></div>
       </div>
     </div>`;
   } else {

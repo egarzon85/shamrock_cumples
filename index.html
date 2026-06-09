@@ -57,8 +57,6 @@ input::placeholder{color:#9CA3AF}
 .b-pend{background:#FEE2E2;color:#7C2D12;border-color:#FCA5A5}
 .b-free{background:#F0FDF4;color:#166534;border-color:#86EFAC}
 .bday-chip{background:#FEF3C7;color:#92400E;border:1.5px solid #FCD34D;border-radius:99px;padding:5px 13px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin:2px 3px 2px 0}
-.chip{display:inline-flex;align-items:center;gap:4px;background:#EEF2FF;color:#2C3E6B;border-radius:99px;padding:5px 12px;font-size:13px;font-weight:500;margin:3px}
-.chip button{background:none;border:none;color:#2C3E6B;cursor:pointer;font-size:16px;padding:0 0 0 2px;line-height:1}
 .sec-title{font-size:11px;font-weight:700;color:#6B7080;letter-spacing:.8px;text-transform:uppercase;margin:16px 0 8px}
 .lbl{display:block;font-size:12px;font-weight:600;color:#6B7080;margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
 .form-group{margin-bottom:14px}
@@ -84,8 +82,10 @@ input::placeholder{color:#9CA3AF}
 .thumb{max-width:100%;border-radius:8px;margin-top:8px;max-height:160px;object-fit:contain;border:1.5px solid #DDD8CE}
 .month-bar{margin-bottom:14px}
 .loading{text-align:center;padding:40px;color:#6B7080;font-size:14px}
-.email-section{background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:12px;padding:14px;margin-bottom:10px}
-.email-section-title{font-size:13px;font-weight:700;color:#1D4ED8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.email-section{border:1.5px solid #BFDBFE;border-radius:12px;padding:14px;margin-bottom:10px;background:#EFF6FF}
+.email-section.warn{background:#FFF7ED;border-color:#FED7AA}
+.email-section-title{font-size:13px;font-weight:700;color:#1D4ED8;margin-bottom:8px}
+.email-section.warn .email-section-title{color:#92400E}
 </style>
 </head>
 <body>
@@ -98,7 +98,6 @@ input::placeholder{color:#9CA3AF}
   </div>
 </div>
 
-<!-- TAB PAGOS -->
 <div id="pg-pagos" class="pg on">
   <div id="loading-pagos" class="loading">Cargando datos...</div>
   <div id="pagos-content" style="display:none">
@@ -111,7 +110,6 @@ input::placeholder{color:#9CA3AF}
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="pg-admin" class="pg">
   <div id="lock-screen" class="lock-screen">
     <div style="font-size:48px;margin-bottom:12px">🔒</div>
@@ -127,8 +125,6 @@ input::placeholder{color:#9CA3AF}
     <p style="font-size:12px;color:#6B7080;margin-top:8px">PIN por defecto: <strong>1234</strong></p>
   </div>
   <div id="admin-panel" style="display:none">
-
-    <!-- Monto -->
     <div class="sec-title">Monto por niño por mes</div>
     <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px">
       <div style="flex:1"><span class="lbl">Mes</span><select id="adm-month" onchange="loadMontoCfg()"></select></div>
@@ -136,51 +132,31 @@ input::placeholder{color:#9CA3AF}
     </div>
     <button class="btn-primary" onclick="saveMontoCfg()" style="margin-bottom:6px">Guardar monto</button>
     <div id="monto-alert"></div>
-
     <div class="divider"></div>
-
-    <!-- Familias -->
     <div class="sec-title">Familias y sus hijos</div>
     <button class="btn-outline-sm" onclick="openAddFam()" style="width:100%;margin-bottom:12px">+ Agregar familia</button>
     <div id="adm-fam-list"></div>
-
     <div class="divider"></div>
-
-    <!-- Emails -->
     <div class="sec-title">✉️ Notificaciones por mail</div>
-
     <div class="email-section">
       <div class="email-section-title">📅 Inicio de mes</div>
-      <p style="font-size:13px;color:#374151;margin-bottom:10px">Envía un mail a todas las familias con el monto del mes y quién cumple.</p>
-      <div class="form-group">
-        <span class="lbl">Mes a notificar</span>
-        <select id="email-month"></select>
-      </div>
-      <button class="btn-primary" onclick="sendMonthlyEmails()" id="btn-monthly">📨 Enviar mails de inicio de mes</button>
+      <p style="font-size:13px;color:#374151;margin-bottom:10px">Avisa a todas las familias el monto del mes y quién cumple.</p>
+      <div class="form-group"><span class="lbl">Mes</span><select id="email-month"></select></div>
+      <button class="btn-primary" id="btn-monthly" onclick="sendMonthlyEmails()">📨 Enviar mails de inicio de mes</button>
       <div id="monthly-alert"></div>
     </div>
-
-    <div class="email-section" style="background:#FFF7ED;border-color:#FED7AA;margin-top:10px">
-      <div class="email-section-title" style="color:#92400E">⏰ Recordatorio pre-cumple</div>
-      <p style="font-size:13px;color:#374151;margin-bottom:10px">Envía recordatorio a las familias que aún no pagaron, para los cumples del mes seleccionado.</p>
-      <div class="form-group">
-        <span class="lbl">Mes</span>
-        <select id="remind-month"></select>
-      </div>
-      <button class="btn-warning" onclick="sendReminderEmails()" id="btn-remind">⏰ Enviar recordatorios</button>
+    <div class="email-section warn" style="margin-top:10px">
+      <div class="email-section-title">⏰ Recordatorio a morosos</div>
+      <p style="font-size:13px;color:#374151;margin-bottom:10px">Manda recordatorio solo a las familias que aún no pagaron.</p>
+      <div class="form-group"><span class="lbl">Mes</span><select id="remind-month"></select></div>
+      <button class="btn-warning" id="btn-remind" onclick="sendReminderEmails()">⏰ Enviar recordatorios</button>
       <div id="remind-alert"></div>
     </div>
-
     <div class="divider"></div>
-
-    <!-- Pagos registrados -->
     <div class="sec-title">Pagos registrados</div>
     <div class="form-group"><select id="adm-pagos-month" onchange="renderAdmPagos()"></select></div>
     <div id="adm-pagos-list"></div>
-
     <div class="divider"></div>
-
-    <!-- PIN -->
     <div class="sec-title">Cambiar PIN</div>
     <div style="display:flex;gap:8px;margin-bottom:4px">
       <input type="password" id="new-pin" maxlength="4" placeholder="Nuevo PIN (4 dígitos)" inputmode="numeric" style="flex:1;width:auto">
@@ -192,7 +168,7 @@ input::placeholder{color:#9CA3AF}
   </div>
 </div>
 
-<!-- Modal: agregar/editar familia -->
+<!-- Modal familia -->
 <div id="mo-fam" class="mo" style="display:none">
   <div class="mo-box">
     <div class="mo-handle"></div>
@@ -203,7 +179,7 @@ input::placeholder{color:#9CA3AF}
       <input type="text" id="mo-fam-name" placeholder="Ej: Familia González">
     </div>
     <div class="form-group">
-      <span class="lbl">Email de la familia</span>
+      <span class="lbl">Email</span>
       <input type="email" id="mo-fam-email" placeholder="familia@gmail.com">
     </div>
     <span class="lbl">Hijos</span>
@@ -229,7 +205,7 @@ input::placeholder{color:#9CA3AF}
   </div>
 </div>
 
-<!-- Modal: registrar pago -->
+<!-- Modal pago -->
 <div id="mo-pay" class="mo" style="display:none">
   <div class="mo-box">
     <div class="mo-handle"></div>
@@ -254,7 +230,7 @@ input::placeholder{color:#9CA3AF}
   </div>
 </div>
 
-<!-- Modal: ver imagen -->
+<!-- Modal imagen -->
 <div id="mo-img" class="mo" style="display:none">
   <div class="mo-box" style="text-align:center">
     <div class="mo-handle"></div>
@@ -271,7 +247,6 @@ input::placeholder{color:#9CA3AF}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDjl_htkVpud9IrpEzlsU8NXA4ljDZaUow",
   authDomain: "shamrock-cumples.firebaseapp.com",
@@ -281,11 +256,10 @@ const firebaseConfig = {
   appId: "1:703002714132:web:295ac8b787696ec9e1c701"
 };
 
-// EmailJS config
-const EJS_PUBLIC   = "UOfV2W5iOKxiX6CgE";
-const EJS_SERVICE  = "service_nm5mn5d";
-const EJS_TMPL_MONTHLY  = "template_2420g7d";
-const EJS_TMPL_REMINDER = "template_pbm0aug";
+const EJS_PUBLIC          = "UOfV2W5iOKxiX6CgE";
+const EJS_SERVICE         = "service_nm5mn5d";
+const EJS_TMPL_MONTHLY    = "template_2420g7d";
+const EJS_TMPL_REMINDER   = "template_pbm0aug";
 
 emailjs.init(EJS_PUBLIC);
 
@@ -297,8 +271,8 @@ const MN = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','S
 let S = null, adminOk = false, payCtx = null, tmpFile = null, editFamIdx = null, tmpKids = [];
 
 function defaultState(){
-  const n = new Date(), k = `${n.getFullYear()}-${n.getMonth()}`;
-  return { pin:'1234', montos:{[k]:10000}, families:[], pagos:{} };
+  const n=new Date(), k=`${n.getFullYear()}-${n.getMonth()}`;
+  return {pin:'1234', montos:{[k]:10000}, families:[], pagos:{}};
 }
 
 async function init(){
@@ -307,39 +281,36 @@ async function init(){
     S = snap.exists() ? snap.data() : defaultState();
     if(!snap.exists()) await setDoc(DOC, S);
   } catch(e){ S = defaultState(); }
-
-  document.getElementById('loading-pagos').style.display = 'none';
-  document.getElementById('pagos-content').style.display = 'block';
+  document.getElementById('loading-pagos').style.display='none';
+  document.getElementById('pagos-content').style.display='block';
   fillSelects();
   renderPagos();
   checkAutoEmails();
-
-  onSnapshot(DOC, snap => {
-    if(snap.exists()){ S = snap.data(); renderPagos(); if(adminOk) renderAdminPanel(); }
+  onSnapshot(DOC, snap=>{
+    if(snap.exists()){ S=snap.data(); renderPagos(); if(adminOk) renderAdminPanel(); }
   });
 }
 
 async function save(){
-  try { await setDoc(DOC, S); }
+  try{ await setDoc(DOC, S); }
   catch(e){ alert('Error al guardar. Verificá tu conexión.'); }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────
 function mk(y,m){ return `${y}-${m}`; }
 function mlbl(k){ const[y,m]=k.split('-'); return `${MN[+m]} ${y}`; }
-function famHasBday(fam, monthIdx){ return (fam.kids||[]).some(k=>+k.month===+monthIdx); }
+function famHasBday(fam,monthIdx){ return (fam.kids||[]).some(k=>+k.month===+monthIdx); }
 function getMontoPerKid(k){ return S.montos[k]||10000; }
 function bdayKidsThisMonth(monthIdx){
   const kids=[];
-  (S.families||[]).forEach(f=>(f.kids||[]).forEach(k=>{ if(+k.month===+monthIdx) kids.push({kid:k.name,day:k.day,fam:f.name}); }));
+  (S.families||[]).forEach(f=>(f.kids||[]).forEach(k=>{
+    if(+k.month===+monthIdx) kids.push({kid:k.name, day:k.day, fam:f.name});
+  }));
   return kids;
 }
-// How many birthday kids this month does this family NOT own
 function effectiveDue(fam, monthIdx, montoPerKid){
-  const totalBdays = bdayKidsThisMonth(monthIdx).length;
-  const ownBdays   = (fam.kids||[]).filter(k=>+k.month===+monthIdx).length;
-  const payFor     = Math.max(0, totalBdays - ownBdays);
-  return payFor * montoPerKid;
+  const total=bdayKidsThisMonth(monthIdx).length;
+  const own=(fam.kids||[]).filter(k=>+k.month===+monthIdx).length;
+  return Math.max(0, total-own)*montoPerKid;
 }
 function getPagos(famName,k){ return ((S.pagos||{})[k]||{})[famName]||[]; }
 function paidAmt(famName,k){ return getPagos(famName,k).reduce((s,p)=>s+p.monto,0); }
@@ -367,52 +338,43 @@ function fillSelects(){
   });
 }
 
-// ── Render pagos ──────────────────────────────────────────────────────────
 function renderPagos(){
   const k=document.getElementById('sel-month').value;
   const[y,m]=k.split('-'), monthIdx=+m;
   document.getElementById('hdr-sub').textContent=`${MN[monthIdx]} ${y}`;
   const montoPerKid=getMontoPerKid(k);
   const bdays=bdayKidsThisMonth(monthIdx);
-
-  let rec=0, tot=0, nOk=0;
+  let rec=0,tot=0,nOk=0;
   (S.families||[]).forEach(f=>{
     const due=effectiveDue(f,monthIdx,montoPerKid);
     rec+=paidAmt(f.name,k); tot+=due;
-    const st=status(f.name,k,due);
-    if(st==='verified'||st==='declared') nOk++;
+    if(due>0){ const st=status(f.name,k,due); if(st==='verified'||st==='declared') nOk++; }
   });
   const payingCount=(S.families||[]).filter(f=>effectiveDue(f,monthIdx,montoPerKid)>0).length;
   const pct=tot>0?Math.round(rec/tot*100):0;
-
   document.getElementById('stats').innerHTML=`
     <div class="stat"><div class="v v-ok">$${fmtARS(rec)}</div><div class="l">Recaudado</div></div>
     <div class="stat"><div class="v v-warn">$${fmtARS(Math.max(0,tot-rec))}</div><div class="l">Falta</div></div>
     <div class="stat"><div class="v v-acc">${nOk}/${payingCount}</div><div class="l">Pagaron</div></div>`;
   document.getElementById('prog-f').style.width=pct+'%';
-
   const br=document.getElementById('bday-row'); br.innerHTML='';
   if(bdays.length>0){
-    bdays.forEach(b=>br.innerHTML+=`<span class="bday-chip">🎂 ${b.kid}${b.day?` (${b.day}/${+m+1})`:''}  <span style="font-weight:400;font-size:11px">${b.fam}</span></span>`);
-    const totalMonto=bdays.length*montoPerKid;
-    if(totalMonto>0) br.innerHTML+=`<div style="font-size:13px;color:#6B7080;margin-top:8px">Monto base: <strong style="color:#18181E">$${fmtARS(bdays.length*montoPerKid)}</strong> — ${bdays.length} cumple${bdays.length>1?'s':''} × $${fmtARS(montoPerKid)}</div>`;
+    bdays.forEach(b=>br.innerHTML+=`<span class="bday-chip">🎂 ${b.kid}${b.day?` (${b.day}/${+m+1})`:''} <span style="font-weight:400;font-size:11px">${b.fam}</span></span>`);
+    const base=bdays.length*montoPerKid;
+    if(base>0) br.innerHTML+=`<div style="font-size:13px;color:#6B7080;margin-top:8px">Monto base: <strong style="color:#18181E">$${fmtARS(base)}</strong> — ${bdays.length} cumple${bdays.length>1?'s':''} × $${fmtARS(montoPerKid)}</div>`;
   } else {
     br.innerHTML=`<div class="alert a-info">ℹ️ Sin cumpleaños este mes</div>`;
   }
-
   const list=document.getElementById('fam-list'); list.innerHTML='';
   if(!(S.families||[]).length){ list.innerHTML='<div class="empty">No hay familias cargadas</div>'; return; }
-
   (S.families||[]).forEach(f=>{
     const due=effectiveDue(f,monthIdx,montoPerKid);
     const p=paidAmt(f.name,k);
     const st=due===0?'no-due':status(f.name,k,due);
     const pct2=due>0?Math.min(100,Math.round(p/due*100)):0;
     const ownBdays=(f.kids||[]).filter(ki=>+ki.month===monthIdx);
-    const totalBdays=bdays.length;
-    const payFor=Math.max(0,totalBdays-ownBdays.length);
-
-    let badge='', action='', subtext='';
+    const payFor=Math.max(0,bdays.length-ownBdays.length);
+    let badge='',action='',subtext='';
     if(st==='no-due'){
       badge=`<span class="badge b-free">🎂 No paga</span>`;
       subtext=`Cumple: ${ownBdays.map(k=>k.name).join(', ')}`;
@@ -424,7 +386,6 @@ function renderPagos(){
       else if(st==='partial')  { badge=`<span class="badge b-part">⏳ ${pct2}%</span>`;  action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar resto</button>`; }
       else                     { badge=`<span class="badge b-pend">Pendiente</span>`;    action=`<button class="btn-pay" onclick="openPay('${esc(f.name)}','${k}')">💳 Pagar</button>`; }
     }
-
     const div=document.createElement('div'); div.className='fam-card';
     div.innerHTML=`
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:${due>0?8:10}px">
@@ -439,7 +400,6 @@ function renderPagos(){
   });
 }
 
-// ── Pay modal ─────────────────────────────────────────────────────────────
 window.openPay = function(fam,k){
   payCtx={fam,k}; tmpFile=null;
   const[y,m]=k.split('-'), monthIdx=+m;
@@ -449,7 +409,7 @@ window.openPay = function(fam,k){
   document.getElementById('mo-title').textContent=fam;
   document.getElementById('mo-body').textContent=`${mlbl(k)} · Total: $${fmtARS(due)}`;
   const ri=document.getElementById('mo-rest');
-  if(rest>0){ ri.style.display='flex'; ri.textContent=`Falta: $${fmtARS(rest)}`; } else { ri.style.display='none'; }
+  if(rest>0){ ri.style.display='flex'; ri.textContent=`Falta: $${fmtARS(rest)}`; } else ri.style.display='none';
   document.getElementById('mo-monto').value=rest>0?rest:'';
   document.getElementById('upload-lbl').innerHTML='📎 Tocar para adjuntar comprobante';
   document.getElementById('upload-prev').style.display='none';
@@ -485,18 +445,14 @@ window.showImg = function(fam,pi,k){
   document.getElementById('mo-img').style.display='flex';
 };
 
-// ── Email functions ───────────────────────────────────────────────────────
-async function sendEmail(templateId, toEmail, params){
-  return emailjs.send(EJS_SERVICE, templateId, { to_email:toEmail, ...params });
-}
-
+// ── Emails ────────────────────────────────────────────────────────────────
 window.sendMonthlyEmails = async function(){
   const k=document.getElementById('email-month').value;
   const[y,m]=k.split('-'), monthIdx=+m;
   const montoPerKid=getMontoPerKid(k);
   const bdays=bdayKidsThisMonth(monthIdx);
-  const btn=document.getElementById('btn-monthly');
   const alertEl=document.getElementById('monthly-alert');
+  const btn=document.getElementById('btn-monthly');
   if(!bdays.length){ alertEl.innerHTML=`<div class="alert a-err">No hay cumpleaños configurados para este mes.</div>`; return; }
   const families=(S.families||[]).filter(f=>f.email);
   if(!families.length){ alertEl.innerHTML=`<div class="alert a-err">Ninguna familia tiene mail cargado.</div>`; return; }
@@ -505,30 +461,33 @@ window.sendMonthlyEmails = async function(){
   for(const f of families){
     const due=effectiveDue(f,monthIdx,montoPerKid);
     const ownBdays=(f.kids||[]).filter(ki=>+ki.month===monthIdx);
-    const bdayNames=bdays.map(b=>`${b.kid}${b.day?` (${b.day}/${monthIdx+1})`:''}  (${b.fam})`).join(', ');
-    let message='';
+    // birthday_kids: list of kids with date
+    const bdayKidsList=bdays.map(b=>`${b.kid}${b.day?` (${b.day}/${monthIdx+1})`:''}`).join(', ');
+    let exemptMsg='';
     if(due===0){
-      message=`Este mes cumple años tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')}, así que no tenés que transferir nada. ¡Feliz cumpleaños!`;
-    } else {
+      exemptMsg=`🎂 Este mes cumple años tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')}, así que no tenés que transferir nada. ¡Feliz cumpleaños!`;
+    } else if(ownBdays.length>0){
       const payFor=bdays.length-ownBdays.length;
-      message=`Este mes ${bdays.length>1?'cumplen años':'cumple años'}: ${bdayNames}.\n\nEl monto a transferir es $${fmtARS(due)}`;
-      if(ownBdays.length>0) message+=` (pagás por ${payFor} cumple${payFor>1?'s':''}, no por el de tu hijo/a)`;
-      message+=`.`;
+      exemptMsg=`(Tu hijo/a ${ownBdays.map(k=>k.name).join(' y ')} también cumple este mes, así que pagás solo por ${payFor} cumple${payFor>1?'s':''} ajenos.)`;
     }
     try {
-      await sendEmail(EJS_TMPL_MONTHLY, f.email, {
-        family_name: f.name,
-        subject: `🎂 Cumples de ${MN[monthIdx]} — Jardín`,
-        message
+      await emailjs.send(EJS_SERVICE, EJS_TMPL_MONTHLY, {
+        to_email:      f.email,
+        family_name:   f.name,
+        month_name:    MN[monthIdx],
+        birthday_count: String(bdays.length),
+        birthday_kids:  bdayKidsList,
+        amount:         due===0 ? '0' : fmtARS(due),
+        exempt_message: exemptMsg
       });
       sent++;
-    } catch(e){ errors++; }
+    } catch(e){ errors++; console.error(e); }
   }
   btn.disabled=false; btn.textContent='📨 Enviar mails de inicio de mes';
-  alertEl.innerHTML=`<div class="alert ${errors?'a-err':'a-ok'}">${sent} mails enviados${errors?`, ${errors} errores`:''}.</div>`;
-  setTimeout(()=>alertEl.innerHTML='',4000);
+  alertEl.innerHTML=`<div class="alert ${errors?'a-err':'a-ok'}">${sent} mails enviados${errors?`, ${errors} con error`:''}.</div>`;
+  setTimeout(()=>alertEl.innerHTML='',5000);
   if(!S.emailLog) S.emailLog={};
-  S.emailLog[k]={monthly:Date.now()}; await save();
+  S.emailLog[`monthly_${k}`]=Date.now(); await save();
 };
 
 window.sendReminderEmails = async function(){
@@ -536,9 +495,10 @@ window.sendReminderEmails = async function(){
   const[y,m]=k.split('-'), monthIdx=+m;
   const montoPerKid=getMontoPerKid(k);
   const bdays=bdayKidsThisMonth(monthIdx);
-  const btn=document.getElementById('btn-remind');
   const alertEl=document.getElementById('remind-alert');
+  const btn=document.getElementById('btn-remind');
   if(!bdays.length){ alertEl.innerHTML=`<div class="alert a-err">No hay cumpleaños en este mes.</div>`; return; }
+  // Only families that have pending/partial payments AND have email
   const pending=(S.families||[]).filter(f=>{
     if(!f.email) return false;
     const due=effectiveDue(f,monthIdx,montoPerKid);
@@ -553,30 +513,30 @@ window.sendReminderEmails = async function(){
     const due=effectiveDue(f,monthIdx,montoPerKid);
     const paid=paidAmt(f.name,k);
     const rest=due-paid;
-    const bdayNames=bdays.map(b=>`${b.kid}${b.day?` el ${b.day}/${monthIdx+1}`:''}`).join(', ');
-    const message=`Te recordamos que ${bdays.length>1?'este mes cumplen años':'este mes cumple años'} ${bdayNames}.\n\n${paid>0?`Ya transferiste $${fmtARS(paid)}, pero todavía falta $${fmtARS(rest)}.`:`Todavía no realizaste la transferencia de $${fmtARS(due)}.`}\n\nPor favor realizá el pago a la brevedad.`;
-    try {
-      await sendEmail(EJS_TMPL_REMINDER, f.email, {
-        family_name: f.name,
-        subject: `⏰ Recordatorio — Cumples de ${MN[monthIdx]}`,
-        message
-      });
-      sent++;
-    } catch(e){ errors++; }
+    // Send one reminder per birthday kid this month
+    for(const bday of bdays){
+      const dateStr=bday.day?`el ${bday.day} de ${MN[monthIdx]}`:`en ${MN[monthIdx]}`;
+      try {
+        await emailjs.send(EJS_SERVICE, EJS_TMPL_REMINDER, {
+          to_email:    f.email,
+          family_name: f.name,
+          birthday_kid: `${bday.kid} (${bday.fam}) — cumple ${dateStr}`,
+          amount:      fmtARS(paid>0 ? rest : due)
+        });
+        sent++;
+      } catch(e){ errors++; console.error(e); }
+    }
   }
   btn.disabled=false; btn.textContent='⏰ Enviar recordatorios';
-  alertEl.innerHTML=`<div class="alert ${errors?'a-err':'a-ok'}">${sent} recordatorios enviados${errors?`, ${errors} errores`:''}.</div>`;
-  setTimeout(()=>alertEl.innerHTML='',4000);
+  alertEl.innerHTML=`<div class="alert ${errors?'a-err':'a-ok'}">${sent} recordatorios enviados${errors?`, ${errors} con error`:''}.</div>`;
+  setTimeout(()=>alertEl.innerHTML='',5000);
 };
 
-// Auto-send on 1st of month
 function checkAutoEmails(){
   const now=new Date();
   if(now.getDate()!==1) return;
   const k=mk(now.getFullYear(),now.getMonth());
-  if(!S.emailLog) S.emailLog={};
-  if(S.emailLog[k]?.monthly) return; // already sent
-  // Trigger automatically
+  if(S.emailLog?.[`monthly_${k}`]) return;
   document.getElementById('email-month').value=k;
   window.sendMonthlyEmails();
 }
@@ -623,8 +583,6 @@ window.saveMontoCfg = async function(){
   document.getElementById('monto-alert').innerHTML=`<div class="alert a-ok">✓ Monto guardado</div>`;
   setTimeout(()=>document.getElementById('monto-alert').innerHTML='',2500);
 };
-
-// Family modal
 window.openAddFam = function(){
   editFamIdx=null; tmpKids=[];
   document.getElementById('mo-fam-title').textContent='Nueva familia';
@@ -652,10 +610,10 @@ window.openEditFam = function(i){
 window.closeMoFam = function(){ document.getElementById('mo-fam').style.display='none'; editFamIdx=null; tmpKids=[]; };
 window.addKid = function(){
   const n=document.getElementById('kid-name').value.trim();
-  const d=parseInt(document.getElementById('kid-day').value)||0;
+  const d=parseInt(document.getElementById('kid-day').value)||null;
   const m=document.getElementById('kid-month').value;
-  if(!n||m===''){ alert('Completá al menos nombre y mes'); return; }
-  tmpKids.push({name:n, day:d||null, month:+m});
+  if(!n||m===''){ alert('Completá nombre y mes'); return; }
+  tmpKids.push({name:n, day:d, month:+m});
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
@@ -712,7 +670,6 @@ function renderAdmFams(){
   });
 }
 window.rmFam = async function(i){ S.families.splice(i,1); await save(); renderAdmFams(); };
-
 function renderAdmPagos(){
   const k=document.getElementById('adm-pagos-month').value;
   const[y,m]=k.split('-'), monthIdx=+m;
@@ -764,8 +721,8 @@ window.changePin = async function(){
 document.getElementById('adm-pagos-month').addEventListener('change', renderAdmPagos);
 document.getElementById('adm-month').addEventListener('change', loadMontoCfg);
 document.getElementById('sel-month').addEventListener('change', renderPagos);
-
 init();
 </script>
 </body>
 </html>
+

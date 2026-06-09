@@ -535,7 +535,7 @@ function renderPagos(){
     recBanner.innerHTML=`<div class="rec-banner">
       <div class="rec-banner-icon">💳</div>
       <div>
-        <div class="rec-banner-text">Transferencias a: ${recFam.name}</div>
+        <div class="rec-banner-text">Transferí a: ${recFam.name}</div>
         ${recFam.alias
           ?`<div class="rec-banner-alias" onclick="copyAlias('${esc(recFam.alias)}')" style="cursor:pointer">${recFam.alias}</div>`
           :'<div class="rec-banner-text" style="font-weight:400;font-size:12px">Sin alias cargado</div>'}
@@ -752,20 +752,16 @@ window.sendReminderEmails=async function(){
   btn.disabled=true;btn.textContent='Enviando...';
   let sent=0,errors=0;
   const histDetails=[];
+  const bdayKidsList=bdays.map(b=>`${b.kid}${b.day?` (${b.day}/${mi+1})`:''}`).join(', ');
   for(const f of pending){
     const due=effectiveDue(f,mi,mpk),paid=paidAmt(f.name,k),rest=due-paid;
-    let ok=false;
-    for(const bday of bdays){
-      const dateStr=bday.day?`el ${bday.day} de ${MN[mi]}`:`en ${MN[mi]}`;
-      try{
-        await emailjs.send(EJS_SERVICE,EJS_TMPL_REMINDER,{
-          to_email:f.email,family_name:f.name,
-          birthday_kid:`${bday.kid} (${bday.fam}) — cumple ${dateStr}`,
-          amount:fmtARS(paid>0?rest:due)
-        });sent++;ok=true;
-      }catch(e){errors++;console.error(e);}
-    }
-    histDetails.push({name:f.name,ok});
+    try{
+      await emailjs.send(EJS_SERVICE,EJS_TMPL_REMINDER,{
+        to_email:f.email,family_name:f.name,
+        birthday_kids:bdayKidsList,
+        amount:fmtARS(paid>0?rest:due)
+      });sent++;histDetails.push({name:f.name,ok:true});
+    }catch(e){errors++;histDetails.push({name:f.name,ok:false});console.error(e);}
   }
   btn.disabled=false;btn.textContent='⏰ Enviar recordatorios';
   alertEl.innerHTML=`<div class="alert ${errors&&!sent?'a-err':'a-ok'}">${sent} recordatorios enviados${errors?`, ${errors} con error`:''}.</div>`;

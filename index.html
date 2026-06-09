@@ -54,9 +54,10 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .admin-link{font-size:11px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:transparent;font-family:'DM Sans',system-ui,sans-serif;white-space:nowrap}
 .admin-link:active{background:rgba(255,255,255,.15)}
 .dark-toggle{display:flex;align-items:center;cursor:pointer}
-.toggle-track{width:34px;height:18px;background:var(--toggle-bg);border-radius:99px;position:relative;transition:background .2s;flex-shrink:0}
-.toggle-knob{width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
-[data-theme="dark"] .toggle-knob{transform:translateX(16px)}
+.toggle-track{width:34px;height:18px;background:rgba(255,255,255,.35);border:1.5px solid rgba(255,255,255,.5);border-radius:99px;position:relative;transition:all .2s;flex-shrink:0}
+.toggle-knob{width:14px;height:14px;background:#2C3E6B;border-radius:50%;position:absolute;top:1px;left:1px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+[data-theme="dark"] .toggle-track{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4)}
+[data-theme="dark"] .toggle-knob{transform:translateX(16px);background:#fff}
 .toggle-icon{font-size:13px;margin-right:3px}
 .pg{display:none;padding:14px 14px 40px;max-width:480px;margin:0 auto}
 .pg.on{display:block}
@@ -126,7 +127,8 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
 .email-section.warn{background:var(--email-warn-bg);border-color:var(--email-warn-bd)}
 .email-section-title{font-size:13px;font-weight:700;color:var(--email-title);margin-bottom:8px}
 .email-section.warn .email-section-title{color:var(--email-warn-title)}
-.admin-back-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1.5px solid var(--border);padding:10px 14px;margin:-14px -14px 14px;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
+.admin-back-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1.5px solid var(--border);padding:10px 14px;margin:-14px -14px 14px;display:flex;align-items:center;justify-content:space-between;transition:background .2s;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.admin-back-bar .btn-cancel{color:var(--text);border-color:var(--border);font-weight:700}
 .collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;user-select:none}
 .collapse-header:active{opacity:.7}
 .collapse-arrow{font-size:12px;color:var(--muted);transition:transform .2s}
@@ -264,6 +266,7 @@ input.error{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(220,3
     <div class="mo-sub">Nombre, mail y los hijos con día y mes de cumpleaños</div>
     <div class="form-group"><span class="lbl">Nombre</span><input type="text" id="mo-fam-name" placeholder="Ej: Familia González"></div>
     <div class="form-group"><span class="lbl">Email</span><input type="email" id="mo-fam-email" placeholder="familia@gmail.com"></div>
+    <div class="form-group"><span class="lbl">Alias / CBU bancario</span><input type="text" id="mo-fam-alias" placeholder="Ej: familia.gonzalez.mp"></div>
     <span class="lbl">Hijos</span>
     <div style="display:flex;gap:6px;margin-top:4px;margin-bottom:4px;flex-wrap:wrap">
       <input type="text" id="kid-name" placeholder="Nombre" style="flex:2;min-width:100px;width:auto">
@@ -708,6 +711,7 @@ window.openAddFam=function(){
   document.getElementById('mo-fam-title').textContent='Nueva familia';
   document.getElementById('mo-fam-name').value='';
   document.getElementById('mo-fam-email').value='';
+  document.getElementById('mo-fam-alias').value='';
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
@@ -723,6 +727,7 @@ window.openEditFam=function(i){
   document.getElementById('mo-fam-title').textContent='Editar familia';
   document.getElementById('mo-fam-name').value=f.name;
   document.getElementById('mo-fam-email').value=f.email||'';
+  document.getElementById('mo-fam-alias').value=f.alias||'';
   document.getElementById('kid-name').value='';
   document.getElementById('kid-day').value='';
   document.getElementById('kid-month').value='';
@@ -760,9 +765,10 @@ function renderKidsList(){
 window.saveFam=async function(){
   const name=document.getElementById('mo-fam-name').value.trim();
   const email=document.getElementById('mo-fam-email').value.trim();
+  const alias=document.getElementById('mo-fam-alias').value.trim();
   if(!name){alert('Ingresá el nombre de la familia');return;}
   if(!S.families)S.families=[];
-  const fam={name,email:email||'',kids:JSON.parse(JSON.stringify(tmpKids))};
+  const fam={name,email:email||'',alias:alias||'',kids:JSON.parse(JSON.stringify(tmpKids))};
   if(editFamIdx===null){
     if(S.families.some(f=>f.name===name)){alert('Ya existe esa familia');return;}
     S.families.push(fam);
@@ -791,6 +797,7 @@ function renderAdmFams(){
           <div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px">🎂 ${ks}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:1px">✉️ ${f.email||'Sin mail'}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:1px">🏦 ${f.alias||'Sin alias'}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
           <button class="btn-outline-sm" style="padding:7px 12px;min-height:36px;font-size:12px" onclick="openEditFam(${f._idx})">Editar</button>
@@ -816,9 +823,10 @@ function renderAdmPagos(){
     else if(st==='declared'){bc='b-dec';bl='📋 Declarado';}
     else if(st==='partial'){bc='b-part';bl='⏳ Parcial';}
     const div=document.createElement('div');div.className='fam-card';
+    const aliasRow=st==='no-due'&&f.alias?`<div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🏦 ${f.alias}</div>`:'';
     let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${ps.length?10:0}px">
       <div><div style="font-size:15px;font-weight:600;color:var(--text)">${f.name}</div>
-      <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div></div>
+      <div style="font-size:12px;color:var(--muted)">${due===0?'Exento':'$'+fmtARS(p)+' de $'+fmtARS(due)}</div>${aliasRow}</div>
       <span class="badge ${bc}">${bl}</span></div>`;
     ps.forEach((p2,pi)=>{
       const dt=new Date(p2.ts),ds=`${dt.getDate()}/${dt.getMonth()+1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;

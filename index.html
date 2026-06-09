@@ -488,6 +488,7 @@ window.copyAlias=function(alias){
     if(el){el.textContent='✓ ¡Copiado!';setTimeout(()=>el.textContent='',2000);}
   });
 };
+window.toggleRec=async function(name){
   if(S.recaudador===name) S.recaudador='';
   else S.recaudador=name;
   await save();

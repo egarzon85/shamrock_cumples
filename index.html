@@ -1055,12 +1055,8 @@ document.getElementById('adm-month').addEventListener('change',loadMontoCfg);
 document.getElementById('sel-month').addEventListener('change',renderPagos);
 init();
 
-// Register service worker
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('/shamrock_cumples/sw.js', {scope: '/shamrock_cumples/'}).catch(()=>{});
-  });
-}
+// Service worker deshabilitado para compatibilidad con GitHub Pages subfolder
+
 
 </script>
 </body>
